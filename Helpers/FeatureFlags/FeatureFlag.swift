@@ -17,7 +17,7 @@ struct FeatureFlag: OptionSet, Sendable {
     static let featuredContent = FeatureFlag(rawValue: 1 << 4)
     static let debugMenu = FeatureFlag(rawValue: 1 << 5)
     
-    static let all: FeatureFlag = [.newOnboarding, .advancedSearch, .premiumFeatures, .achievements, .featuredContent]
+    static let all: FeatureFlag = [.newOnboarding, .advancedSearch, .premiumFeatures, .achievements, .featuredContent, .debugMenu]
     
     var name: String {
         switch self {

@@ -66,13 +66,12 @@ struct SettingsView: View {
                 }
             }
             
-            if featureFlags.isEnabled(.debugMenu) {
-                Section("Developer") {
-                    NavigationLink(value: SettingsRoute.debug) {
-                        Label("Debug Settings", systemImage: "hammer")
-                    }
+            Section("Developer") {
+                NavigationLink(value: SettingsRoute.debug) {
+                    Label("Debug Settings", systemImage: "hammer")
                 }
             }
+
         }
         .navigationTitle("Settings")
     }
