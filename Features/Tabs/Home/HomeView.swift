@@ -12,10 +12,6 @@ struct HomeView: View {
     @Environment(\.appRouter) private var appRouter
     @Environment(\.featureFlags) private var featureFlags
     
-    var router: HomeRouter {
-        appRouter.homeRouter()
-    }
-    
     var body: some View {
         Group {
             if viewModel.viewState.isLoading {
@@ -26,7 +22,7 @@ struct HomeView: View {
                     message: "Start by adding some items",
                     action: {
                         Task { @MainActor in
-                            router.presentSheet(.newItem)
+                            appRouter.homeRouter.presentSheet(.newItem)
                         }
                     }
                 )
@@ -34,7 +30,7 @@ struct HomeView: View {
                 List(viewModel.viewState.items) { item in
                     Button(action: {
                         Task { @MainActor in
-                            router.push(.detail(itemId: item.id))
+                            appRouter.homeRouter.push(.detail(itemId: item.id))
                         }
                     }) {
                         ItemRow(item: item)
@@ -42,7 +38,7 @@ struct HomeView: View {
                     .swipeActions {
                         Button(role: .destructive) {
                             Task { @MainActor in
-                                router.showAlert(HomeAlert(type: .deleteItem(itemId: item.id)))
+                                appRouter.homeRouter.showAlert(HomeAlert(type: .deleteItem(itemId: item.id)))
                             }
                         } label: {
                             Label("Delete", systemImage: "trash")
@@ -57,7 +53,7 @@ struct HomeView: View {
                 if featureFlags.isEnabled(.featuredContent) {
                     Button("Featured") {
                         Task { @MainActor in
-                            router.push(.featured)
+                            appRouter.homeRouter.push(.featured)
                         }
                     }
                 }
@@ -66,12 +62,12 @@ struct HomeView: View {
                 Menu {
                     Button("New Item") {
                         Task { @MainActor in
-                            router.presentSheet(.newItem)
+                            appRouter.homeRouter.presentSheet(.newItem)
                         }
                     }
                     Button("Quick Add") {
                         Task { @MainActor in
-                            router.presentSheet(.quickAdd)
+                            appRouter.homeRouter.presentSheet(.quickAdd)
                         }
                     }
                 } label: {

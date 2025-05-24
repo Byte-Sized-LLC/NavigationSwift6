@@ -13,10 +13,6 @@ struct ProfileView: View {
     @Environment(\.appRouter) private var appRouter
     @Environment(\.featureFlags) private var featureFlags
     
-    var router: ProfileRouter {
-        appRouter.profileRouter()
-    }
-    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -39,14 +35,14 @@ struct ProfileView: View {
                     HStack(spacing: 20) {
                         Button("Edit Profile") {
                             Task { @MainActor in
-                                router.presentSheet(.editProfile)
+                                appRouter.profileRouter.presentSheet(.editProfile)
                             }
                         }
                         .buttonStyle(.borderedProminent)
                         
                         Button("Share") {
                             Task { @MainActor in
-                                router.presentSheet(.shareProfile)
+                                appRouter.profileRouter.presentSheet(.shareProfile)
                             }
                         }
                         .buttonStyle(.bordered)
@@ -67,7 +63,7 @@ struct ProfileView: View {
                     
                     Button(action: {
                         Task { @MainActor in
-                            router.push(.followers(userId: userId))
+                            appRouter.profileRouter.push(.followers(userId: userId))
                         }
                     }) {
                         VStack {
@@ -82,7 +78,7 @@ struct ProfileView: View {
                     
                     Button(action: {
                         Task { @MainActor in
-                            router.push(.following(userId: userId))
+                            appRouter.profileRouter.push(.following(userId: userId))
                         }
                     }) {
                         VStack {
@@ -99,7 +95,7 @@ struct ProfileView: View {
                 if featureFlags.isEnabled(.achievements) {
                     Button("View Achievements") {
                         Task { @MainActor in
-                            router.push(.achievements)
+                            appRouter.profileRouter.push(.achievements)
                         }
                     }
                     .buttonStyle(.bordered)
@@ -112,7 +108,7 @@ struct ProfileView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Settings") {
                     Task { @MainActor in
-                        router.push(.settings)
+                        appRouter.profileRouter.push(.settings)
                     }
                 }
             }

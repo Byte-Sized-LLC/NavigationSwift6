@@ -18,12 +18,8 @@ struct HomeNavigationView: View {
         _viewModel = State(initialValue: HomeViewModel(store: store))
     }
     
-    var router: HomeRouter {
-        appRouter.homeRouter()
-    }
-    
     var body: some View {
-        @Bindable var routerBinding = router
+        @Bindable var routerBinding = appRouter.homeRouter
         
         NavigationStack(path: $routerBinding.path) {
             HomeView(viewModel: viewModel)
@@ -50,7 +46,7 @@ struct HomeNavigationView: View {
         case .detail(let itemId):
             DetailView(itemId: itemId)
         case .category(let categoryId):
-            CategoryView(categoryId: categoryId)
+            CategoryView(viewModel: CategoryViewModel(categoryId: categoryId, appRouter: appRouter, userService: dependencies.userService))
         case .featured:
             FeaturedView()
         }

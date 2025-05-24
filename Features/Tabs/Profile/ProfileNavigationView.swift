@@ -18,12 +18,8 @@ struct ProfileNavigationView: View {
         _viewModel = State(initialValue: ProfileViewModel(store: store))
     }
     
-    var router: ProfileRouter {
-        appRouter.profileRouter()
-    }
-    
     var body: some View {
-        @Bindable var routerBinding = router
+        @Bindable var routerBinding = appRouter.profileRouter
         
         NavigationStack(path: $routerBinding.path) {
             ProfileView(viewModel: viewModel, userId: "current")

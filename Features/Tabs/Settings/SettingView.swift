@@ -11,10 +11,6 @@ struct SettingsView: View {
     @Environment(\.appRouter) private var appRouter
     @Environment(\.featureFlags) private var featureFlags
     
-    var router: SettingsRouter {
-        appRouter.settingsRouter()
-    }
-    
     var body: some View {
         List {
             Section("Account") {
@@ -39,7 +35,7 @@ struct SettingsView: View {
                 if featureFlags.isEnabled(.premiumFeatures) {
                     Button(action: {
                         Task { @MainActor in
-                            router.presentSheet(.premium)
+                            appRouter.settingsRouter.presentSheet(.premium)
                         }
                     }) {
                         Label("Premium", systemImage: "crown")
@@ -50,7 +46,7 @@ struct SettingsView: View {
             Section("Data") {
                 Button(action: {
                     Task { @MainActor in
-                        router.presentSheet(.exportData)
+                        appRouter.settingsRouter.presentSheet(.exportData)
                     }
                 }) {
                     Label("Export Data", systemImage: "square.and.arrow.up")
@@ -58,7 +54,7 @@ struct SettingsView: View {
                 
                 Button(action: {
                     Task { @MainActor in
-                        router.presentSheet(.deleteAccount)
+                        appRouter.settingsRouter.presentSheet(.deleteAccount)
                     }
                 }) {
                     Label("Delete Account", systemImage: "trash")

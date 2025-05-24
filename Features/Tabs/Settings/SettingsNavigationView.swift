@@ -9,13 +9,8 @@ import SwiftUI
 
 struct SettingsNavigationView: View {
     @Environment(\.appRouter) private var appRouter
-    
-    var router: SettingsRouter {
-        appRouter.settingsRouter()
-    }
-    
     var body: some View {
-        @Bindable var routerBinding = router
+        @Bindable var routerBinding = appRouter.settingsRouter
         
         NavigationStack(path: $routerBinding.path) {
             SettingsView()

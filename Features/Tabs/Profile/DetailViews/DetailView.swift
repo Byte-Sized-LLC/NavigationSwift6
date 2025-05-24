@@ -9,9 +9,21 @@ import SwiftUI
 
 struct DetailView: View {
     let itemId: String
+    @Environment(\.appRouter) private var appRouter
     
     var body: some View {
-        Text("Detail View for item: \(itemId)")
-            .navigationTitle("Detail")
+        VStack {
+            Text("Detail View for item: \(itemId)")
+                .navigationTitle("Detail")
+            
+            Button("Go to Category") {
+                Task { @MainActor in
+//                    appRouter.homeRouter.presentSheet(.newItem)
+//                    appRouter.homeRouter.showAlert(.init(type: .error(message: "some fake error")))
+                    appRouter.homeRouter.push(.category(categoryId: "sample-category"))
+                }
+            }
+            .padding()
+        }
     }
 }

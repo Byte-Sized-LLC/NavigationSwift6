@@ -41,19 +41,23 @@ final class AppRouter: @unchecked Sendable {
         tabRouters[.settings] = SettingsRouter()
     }
     
-    func homeRouter() -> HomeRouter {
+    var homeRouter: HomeRouter {
+        selectedTab = .home
         return tabRouters[.home] as? HomeRouter ?? HomeRouter()
     }
     
-    func searchRouter() -> SearchRouter {
+    var searchRouter: SearchRouter {
+        selectedTab = .search
         return tabRouters[.search] as? SearchRouter ?? SearchRouter()
     }
     
-    func profileRouter() -> ProfileRouter {
+    var profileRouter: ProfileRouter {
+        selectedTab = .profile
         return tabRouters[.profile] as? ProfileRouter ?? ProfileRouter()
     }
     
-    func settingsRouter() -> SettingsRouter {
+    var settingsRouter: SettingsRouter {
+        selectedTab = .settings
         return tabRouters[.settings] as? SettingsRouter ?? SettingsRouter()
     }
     
@@ -78,7 +82,7 @@ final class AppRouter: @unchecked Sendable {
                 return
             }
             selectedTab = .profile
-            profileRouter().push(route)
+            profileRouter.push(route)
             
         case .item(let itemId):
             let route = HomeRoute.detail(itemId: itemId)
@@ -86,12 +90,12 @@ final class AppRouter: @unchecked Sendable {
                 return
             }
             selectedTab = .home
-            homeRouter().push(route)
+            homeRouter.push(route)
             
         case .search(let query):
             selectedTab = .search
             if let query = query {
-                searchRouter().push(.results(query: query))
+                searchRouter.push(.results(query: query))
             }
             
         case .settings:

@@ -11,12 +11,8 @@ struct SearchNavigationView: View {
     @Environment(\.appRouter) private var appRouter
     @Environment(\.featureFlags) private var featureFlags
     
-    var router: SearchRouter {
-        appRouter.searchRouter()
-    }
-    
     var body: some View {
-        @Bindable var routerBinding = router
+        @Bindable var routerBinding = appRouter.searchRouter
         
         NavigationStack(path: $routerBinding.path) {
             SearchView()

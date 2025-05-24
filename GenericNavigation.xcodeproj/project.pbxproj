@@ -57,6 +57,7 @@
 				Onboarding/OnboardingStep.swift,
 				Onboarding/OnboardingStepView.swift,
 				Tabs/Home/DetailViews/CategoryView.swift,
+				Tabs/Home/DetailViews/CategoryViewModel.swift,
 				Tabs/Home/DetailViews/EmptyStateView.swift,
 				Tabs/Home/DetailViews/FeaturedView.swift,
 				Tabs/Home/DetailViews/ItemRow.swift,

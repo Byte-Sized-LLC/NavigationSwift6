@@ -11,17 +11,13 @@ struct SearchView: View {
     @State private var searchText = ""
     @Environment(\.appRouter) private var appRouter
     @Environment(\.featureFlags) private var featureFlags
-    
-    var router: SearchRouter {
-        appRouter.searchRouter()
-    }
-    
+
     var body: some View {
         VStack {
             SearchBar(text: $searchText) {
                 if !searchText.isEmpty {
                     Task { @MainActor in
-                        router.push(.results(query: searchText))
+                        appRouter.searchRouter.push(.results(query: searchText))
                     }
                 }
             }
@@ -32,7 +28,7 @@ struct SearchView: View {
                         Button(action: {
                             searchText = recent
                             Task { @MainActor in
-                                router.push(.results(query: recent))
+                                appRouter.searchRouter.push(.results(query: recent))
                             }
                         }) {
                             HStack {
@@ -47,7 +43,7 @@ struct SearchView: View {
                     Section {
                         Button("Advanced Search") {
                             Task { @MainActor in
-                                router.push(.advanced)
+                                appRouter.searchRouter.push(.advanced)
                             }
                         }
                     }
@@ -59,7 +55,7 @@ struct SearchView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Filters") {
                     Task { @MainActor in
-                        router.presentSheet(.filters(currentFilters: SearchFilters()))
+                        appRouter.searchRouter.presentSheet(.filters(currentFilters: SearchFilters()))
                     }
                 }
             }
