@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct EditProfileSheet: View {
-    @Bindable var viewModel: ProfileViewModel
     @Environment(\.dismiss) var dismiss
     
     var body: some View {

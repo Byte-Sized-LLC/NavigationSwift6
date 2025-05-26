@@ -1,5 +1,5 @@
 //
-//  TabItem.swift
+//  RootTab.swift
 //  GenericNavigation
 //
 //  Created by Dylan Anderson on 5/23/25.
@@ -7,11 +7,13 @@
 
 import Foundation
 
-enum TabItem: Int, CaseIterable, Sendable {
-    case home = 0
-    case search = 1
-    case profile = 2
-    case settings = 3
+enum RootTab: Sendable, Identifiable, Hashable {
+    var id: String { title }
+
+    case home
+    case search
+    case profile
+    case settings
     
     var title: String {
         switch self {

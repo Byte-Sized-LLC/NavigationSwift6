@@ -24,24 +24,35 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1EB5103E2DE0A0C800B2E978 /* GenericNavigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GenericNavigation.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1EB5104B2DE0A0CB00B2E978 /* GenericNavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenericNavigationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1EB510552DE0A0CB00B2E978 /* GenericNavigationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenericNavigationUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E285A572DE4A887004959D1 /* GenericNavigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GenericNavigation.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E285A582DE4A887004959D1 /* GenericNavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenericNavigationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E285A592DE4A887004959D1 /* GenericNavigationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenericNavigationUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		1EB514A52DE0B04D00B2E978 /* Exceptions for "Helpers" folder in "GenericNavigation" target */ = {
+		1E92C12D2DE49BF800A87642 /* Exceptions for "GenericNavigation" folder in "GenericNavigation" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Deeplink/DeepLink.swift,
-				Deeplink/DeepLinkHandler.swift,
-				FeatureFlags/FeatureFlag.swift,
-				FeatureFlags/FeatureFlagService.swift,
-				FeatureFlags/FeatureFlagStorage.swift,
+				Info.plist,
 			);
 			target = 1EB5103D2DE0A0C800B2E978 /* GenericNavigation */;
 		};
-		1EB514AD2DE0B08D00B2E978 /* Exceptions for "SupportingFiles" folder in "GenericNavigation" target */ = {
+		1E92C1362DE49D0400A87642 /* Exceptions for "Tests" folder in "GenericNavigationTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				UnitTests/GenericNavigationTests.swift,
+			);
+			target = 1EB5104A2DE0A0CB00B2E978 /* GenericNavigationTests */;
+		};
+		1E92C1382DE49D2500A87642 /* Exceptions for "Tests" folder in "GenericNavigationUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				UITests/GenericNavigationUITests.swift,
+				UITests/GenericNavigationUITestsLaunchTests.swift,
+			);
+			target = 1EB510542DE0A0CB00B2E978 /* GenericNavigationUITests */;
+		};
+		1EB514AD2DE0B08D00B2E978 /* Exceptions for "Root" folder in "GenericNavigation" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				AppDelegate.swift,
@@ -102,30 +113,7 @@
 				Tabs/Settings/SettingView.swift,
 				Tabs/Settings/SettingViewModel.swift,
 				Tabs/TabItem.swift,
-				Tabs/TabNavigationView.swift,
 				Tabs/ViewModel.swift,
-			);
-			target = 1EB5103D2DE0A0C800B2E978 /* GenericNavigation */;
-		};
-		1EB514B72DE0B14300B2E978 /* Exceptions for "Navigation" folder in "GenericNavigation" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Alerts/HomeAlert.swift,
-				Alerts/ProfileAlert.swift,
-				Alerts/SearchAlert.swift,
-				Alerts/SettingAlert.swift,
-				AppRoute.swift,
-				AppRouter.swift,
-				Router.swift,
-				Routes/HomeRoute.swift,
-				Routes/ProfileRoute.swift,
-				Routes/SearchRoute.swift,
-				Routes/SettingsRoute.swift,
-				Sheets/HomeSheet.swift,
-				Sheets/ProfileSheet.swift,
-				Sheets/SearchSheet.swift,
-				Sheets/SettingsSheet.swift,
-				TabNavigatorWrapper.swift,
 			);
 			target = 1EB5103D2DE0A0C800B2E978 /* GenericNavigation */;
 		};
@@ -140,59 +128,24 @@
 			);
 			target = 1EB5103D2DE0A0C800B2E978 /* GenericNavigation */;
 		};
-		1EB514F42DE0B57900B2E978 /* Exceptions for "Network" folder in "GenericNavigation" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				APIError.swift,
-				APIService.swift,
-				Services/AnalyticsService.swift,
-				Services/UserService.swift,
-			);
-			target = 1EB5103D2DE0A0C800B2E978 /* GenericNavigation */;
-		};
-		1EB514FF2DE0B5CC00B2E978 /* Exceptions for "Models" folder in "GenericNavigation" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Item.swift,
-				ServiceFilters.swift,
-				User.swift,
-				UserProfile.swift,
-			);
-			target = 1EB5103D2DE0A0C800B2E978 /* GenericNavigation */;
-		};
-		1EB515092DE0B63400B2E978 /* Exceptions for "Store" folder in "GenericNavigation" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Store.swift,
-				Stores/HomeStore.swift,
-				Stores/ProfileStore.swift,
-			);
-			target = 1EB5103D2DE0A0C800B2E978 /* GenericNavigation */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		1EB510402DE0A0C800B2E978 /* GenericNavigation */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = GenericNavigation;
-			sourceTree = "<group>";
-		};
-		1EB5104E2DE0A0CB00B2E978 /* GenericNavigationTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = GenericNavigationTests;
-			sourceTree = "<group>";
-		};
-		1EB510582DE0A0CB00B2E978 /* GenericNavigationUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = GenericNavigationUITests;
-			sourceTree = "<group>";
-		};
-		1EB514A02DE0AD9F00B2E978 /* Models */ = {
+		1E92C1342DE49CB800A87642 /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				1EB514FF2DE0B5CC00B2E978 /* Exceptions for "Models" folder in "GenericNavigation" target */,
+				1E92C1362DE49D0400A87642 /* Exceptions for "Tests" folder in "GenericNavigationTests" target */,
+				1E92C1382DE49D2500A87642 /* Exceptions for "Tests" folder in "GenericNavigationUITests" target */,
 			);
-			path = Models;
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		1EB510402DE0A0C800B2E978 /* GenericNavigation */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1E92C12D2DE49BF800A87642 /* Exceptions for "GenericNavigation" folder in "GenericNavigation" target */,
+			);
+			path = GenericNavigation;
 			sourceTree = "<group>";
 		};
 		1EB514A12DE0ADA200B2E978 /* Features */ = {
@@ -203,28 +156,12 @@
 			path = Features;
 			sourceTree = "<group>";
 		};
-		1EB514A22DE0B04200B2E978 /* Helpers */ = {
+		1EB514AA2DE0B08400B2E978 /* Root */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				1EB514A52DE0B04D00B2E978 /* Exceptions for "Helpers" folder in "GenericNavigation" target */,
+				1EB514AD2DE0B08D00B2E978 /* Exceptions for "Root" folder in "GenericNavigation" target */,
 			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
-		1EB514AA2DE0B08400B2E978 /* SupportingFiles */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				1EB514AD2DE0B08D00B2E978 /* Exceptions for "SupportingFiles" folder in "GenericNavigation" target */,
-			);
-			path = SupportingFiles;
-			sourceTree = "<group>";
-		};
-		1EB514B42DE0B13B00B2E978 /* Navigation */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				1EB514B72DE0B14300B2E978 /* Exceptions for "Navigation" folder in "GenericNavigation" target */,
-			);
-			path = Navigation;
+			path = Root;
 			sourceTree = "<group>";
 		};
 		1EB514E52DE0B42200B2E978 /* Dependency */ = {
@@ -233,22 +170,6 @@
 				1EB514E62DE0B42700B2E978 /* Exceptions for "Dependency" folder in "GenericNavigation" target */,
 			);
 			path = Dependency;
-			sourceTree = "<group>";
-		};
-		1EB514F12DE0B56D00B2E978 /* Network */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				1EB514F42DE0B57900B2E978 /* Exceptions for "Network" folder in "GenericNavigation" target */,
-			);
-			path = Network;
-			sourceTree = "<group>";
-		};
-		1EB515062DE0B62300B2E978 /* Store */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				1EB515092DE0B63400B2E978 /* Exceptions for "Store" folder in "GenericNavigation" target */,
-			);
-			path = Store;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -281,29 +202,15 @@
 		1EB510352DE0A0C800B2E978 = {
 			isa = PBXGroup;
 			children = (
-				1EB515062DE0B62300B2E978 /* Store */,
-				1EB514F12DE0B56D00B2E978 /* Network */,
 				1EB514E52DE0B42200B2E978 /* Dependency */,
-				1EB514B42DE0B13B00B2E978 /* Navigation */,
-				1EB514AA2DE0B08400B2E978 /* SupportingFiles */,
-				1EB514A22DE0B04200B2E978 /* Helpers */,
+				1EB514AA2DE0B08400B2E978 /* Root */,
 				1EB514A12DE0ADA200B2E978 /* Features */,
-				1EB514A02DE0AD9F00B2E978 /* Models */,
 				1EB510402DE0A0C800B2E978 /* GenericNavigation */,
-				1EB5104E2DE0A0CB00B2E978 /* GenericNavigationTests */,
-				1EB510582DE0A0CB00B2E978 /* GenericNavigationUITests */,
-				1EB5103F2DE0A0C800B2E978 /* Products */,
+				1E92C1342DE49CB800A87642 /* Tests */,
+				1E285A572DE4A887004959D1 /* GenericNavigation.app */,
+				1E285A582DE4A887004959D1 /* GenericNavigationTests.xctest */,
+				1E285A592DE4A887004959D1 /* GenericNavigationUITests.xctest */,
 			);
-			sourceTree = "<group>";
-		};
-		1EB5103F2DE0A0C800B2E978 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1EB5103E2DE0A0C800B2E978 /* GenericNavigation.app */,
-				1EB5104B2DE0A0CB00B2E978 /* GenericNavigationTests.xctest */,
-				1EB510552DE0A0CB00B2E978 /* GenericNavigationUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -328,7 +235,7 @@
 			packageProductDependencies = (
 			);
 			productName = GenericNavigation;
-			productReference = 1EB5103E2DE0A0C800B2E978 /* GenericNavigation.app */;
+			productReference = 1E285A572DE4A887004959D1 /* GenericNavigation.app */;
 			productType = "com.apple.product-type.application";
 		};
 		1EB5104A2DE0A0CB00B2E978 /* GenericNavigationTests */ = {
@@ -344,14 +251,11 @@
 			dependencies = (
 				1EB5104D2DE0A0CB00B2E978 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				1EB5104E2DE0A0CB00B2E978 /* GenericNavigationTests */,
-			);
 			name = GenericNavigationTests;
 			packageProductDependencies = (
 			);
 			productName = GenericNavigationTests;
-			productReference = 1EB5104B2DE0A0CB00B2E978 /* GenericNavigationTests.xctest */;
+			productReference = 1E285A582DE4A887004959D1 /* GenericNavigationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		1EB510542DE0A0CB00B2E978 /* GenericNavigationUITests */ = {
@@ -367,14 +271,11 @@
 			dependencies = (
 				1EB510572DE0A0CB00B2E978 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				1EB510582DE0A0CB00B2E978 /* GenericNavigationUITests */,
-			);
 			name = GenericNavigationUITests;
 			packageProductDependencies = (
 			);
 			productName = GenericNavigationUITests;
-			productReference = 1EB510552DE0A0CB00B2E978 /* GenericNavigationUITests.xctest */;
+			productReference = 1E285A592DE4A887004959D1 /* GenericNavigationUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -410,7 +311,7 @@
 			mainGroup = 1EB510352DE0A0C800B2E978;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 1EB5103F2DE0A0C800B2E978 /* Products */;
+			productRefGroup = 1EB510352DE0A0C800B2E978;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -616,6 +517,7 @@
 				DEVELOPMENT_TEAM = 6NDRN8ASFY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GenericNavigation/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -648,6 +550,7 @@
 				DEVELOPMENT_TEAM = 6NDRN8ASFY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GenericNavigation/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

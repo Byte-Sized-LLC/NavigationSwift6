@@ -8,66 +8,52 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @Environment(\.appRouter) private var appRouter
-    @Environment(\.featureFlags) private var featureFlags
-    
+    @State var viewModel: SettingsViewModel
+
     var body: some View {
         List {
             Section("Account") {
-                NavigationLink(value: SettingsRoute.account) {
+                Button(action: { viewModel.navigateToAccount() }) {
                     Label("Account Settings", systemImage: "person.circle")
                 }
                 
-                NavigationLink(value: SettingsRoute.privacy) {
+                Button(action: { viewModel.navigateToPrivacy() }) {
                     Label("Privacy", systemImage: "lock")
                 }
                 
-                NavigationLink(value: SettingsRoute.notifications) {
+                Button(action: { viewModel.navigateToNotifications() }) {
                     Label("Notifications", systemImage: "bell")
                 }
             }
             
             Section("App") {
-                NavigationLink(value: SettingsRoute.appearance) {
+                Button(action: { viewModel.navigateToAppearance() }) {
                     Label("Appearance", systemImage: "paintbrush")
                 }
                 
-                if featureFlags.isEnabled(.premiumFeatures) {
-                    Button(action: {
-                        Task { @MainActor in
-                            appRouter.settingsRouter.presentSheet(.premium)
-                        }
-                    }) {
+                if viewModel.isPremiumEnabled {
+                    Button(action: { viewModel.navigateToPremium() }) {
                         Label("Premium", systemImage: "crown")
                     }
                 }
             }
             
             Section("Data") {
-                Button(action: {
-                    Task { @MainActor in
-                        appRouter.settingsRouter.presentSheet(.exportData)
-                    }
-                }) {
+                Button(action: { viewModel.navigateToExportData() }) {
                     Label("Export Data", systemImage: "square.and.arrow.up")
                 }
                 
-                Button(action: {
-                    Task { @MainActor in
-                        appRouter.settingsRouter.presentSheet(.deleteAccount)
-                    }
-                }) {
+                Button(action: { viewModel.navigateToDeleteAccount() }) {
                     Label("Delete Account", systemImage: "trash")
                         .foregroundColor(.red)
                 }
             }
             
             Section("Developer") {
-                NavigationLink(value: SettingsRoute.debug) {
+                Button(action: { viewModel.navigateToDebug() }) {
                     Label("Debug Settings", systemImage: "hammer")
                 }
             }
-
         }
         .navigationTitle("Settings")
     }

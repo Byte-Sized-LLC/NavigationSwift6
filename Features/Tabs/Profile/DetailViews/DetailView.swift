@@ -18,9 +18,7 @@ struct DetailView: View {
             
             Button("Go to Category") {
                 Task { @MainActor in
-//                    appRouter.homeRouter.presentSheet(.newItem)
-//                    appRouter.homeRouter.showAlert(.init(type: .error(message: "some fake error")))
-                    appRouter.homeRouter.push(.category(categoryId: "sample-category"))
+                    appRouter.homeRouter.navigate(to: .category(categoryId: "sample-category"), style: .push)
                 }
             }
             .padding()

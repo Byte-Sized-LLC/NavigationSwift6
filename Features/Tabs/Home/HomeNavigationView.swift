@@ -19,20 +19,16 @@ struct HomeNavigationView: View {
     }
     
     var body: some View {
-        @Bindable var routerBinding = appRouter.homeRouter
-        
-        NavigationStack(path: $routerBinding.path) {
-            HomeView(viewModel: viewModel)
-                .navigationDestination(for: HomeRoute.self) { route in
-                    destinationView(for: route)
-                }
-        }
-        .sheet(item: $routerBinding.presentedSheet) { sheet in
-            sheetView(for: sheet)
-        }
-        .alert(item: $routerBinding.alertItem) { alert in
-            alertView(for: alert)
-        }
+        TabNavigationWrapper(
+            tab: .home,
+            router: appRouter.homeRouter,
+            content: {
+                HomeView(viewModel: viewModel)
+            },
+            destinationBuilder: { route in
+                destinationView(for: route)
+            }
+        )
         .onAppear {
             viewModel.loadItems()
         }
@@ -46,46 +42,19 @@ struct HomeNavigationView: View {
         case .detail(let itemId):
             DetailView(itemId: itemId)
         case .category(let categoryId):
-            CategoryView(viewModel: CategoryViewModel(categoryId: categoryId, appRouter: appRouter, userService: dependencies.userService))
+            CategoryView(viewModel: CategoryViewModel(
+                categoryId: categoryId,
+                navigationCoordinator: appRouter,
+                userService: dependencies.userService
+            ))
         case .featured:
             FeaturedView()
-        }
-    }
-    
-    @ViewBuilder
-    private func sheetView(for sheet: HomeSheet) -> some View {
-        switch sheet {
         case .newItem:
             NewItemView()
-                .presentationDetents([.medium, .large])
-        case .share(let itemId):
+        case .share(itemId: let itemId):
             ShareItemView(itemId: itemId)
-                .presentationDetents([.medium])
         case .quickAdd:
             QuickAddView()
-                .presentationDetents([.height(200)])
-        }
-    }
-    
-    private func alertView(for alert: HomeAlert) -> Alert {
-        switch alert.type {
-        case .deleteItem(let itemId):
-            return Alert(
-                title: Text("Delete Item"),
-                message: Text("Are you sure you want to delete this item?"),
-                primaryButton: .destructive(Text("Delete")) {
-                    if let item = viewModel.viewState.items.first(where: { $0.id == itemId }) {
-                        viewModel.deleteItem(item)
-                    }
-                },
-                secondaryButton: .cancel()
-            )
-        case .error(let message):
-            return Alert(
-                title: Text("Error"),
-                message: Text(message),
-                dismissButton: .default(Text("OK"))
-            )
         }
     }
 }

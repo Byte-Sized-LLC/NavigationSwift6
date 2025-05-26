@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct EditProfileView: View {
-    @Bindable var viewModel: ProfileViewModel
     
     var body: some View {
         Text("Edit Profile")

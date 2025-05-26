@@ -9,25 +9,27 @@ import SwiftUI
 
 struct SettingsNavigationView: View {
     @Environment(\.appRouter) private var appRouter
+    @Environment(\.featureFlags) private var featureFlagService
+    
     var body: some View {
-        @Bindable var routerBinding = appRouter.settingsRouter
-        
-        NavigationStack(path: $routerBinding.path) {
-            SettingsView()
-                .navigationDestination(for: SettingsRoute.self) { route in
-                    destinationView(for: route)
-                }
-        }
-        .sheet(item: $routerBinding.presentedSheet) { sheet in
-            sheetView(for: sheet)
-        }
+        TabNavigationWrapper(
+            tab: .settings,
+            router: appRouter.settingsRouter,
+            content: {
+                let viewModel = SettingsViewModel(navigationCoordinator: appRouter, featureFlagService: featureFlagService)
+                SettingsView(viewModel: viewModel)
+            },
+            destinationBuilder: { route in
+                destinationView(for: route)
+            }
+        )
+        .environment(\.appRouter, appRouter)
+        .environment(\.featureFlags, featureFlagService)
     }
     
     @ViewBuilder
     private func destinationView(for route: SettingsRoute) -> some View {
         switch route {
-        case .main:
-            SettingsView()
         case .account:
             AccountSettingsView()
         case .privacy:
@@ -38,21 +40,12 @@ struct SettingsNavigationView: View {
             AppearanceSettingsView()
         case .debug:
             DebugSettingsView()
-        }
-    }
-    
-    @ViewBuilder
-    private func sheetView(for sheet: SettingsSheet) -> some View {
-        switch sheet {
         case .premium:
             PremiumView()
-                .presentationDetents([.large])
         case .exportData:
             ExportDataView()
-                .presentationDetents([.medium])
         case .deleteAccount:
             DeleteAccountView()
-                .presentationDetents([.medium])
         }
     }
 }

@@ -22,7 +22,7 @@ struct HomeView: View {
                     message: "Start by adding some items",
                     action: {
                         Task { @MainActor in
-                            appRouter.homeRouter.presentSheet(.newItem)
+                            appRouter.homeRouter.navigate(to: .newItem, style: .sheet(detents: [.large]))
                         }
                     }
                 )
@@ -30,7 +30,7 @@ struct HomeView: View {
                 List(viewModel.viewState.items) { item in
                     Button(action: {
                         Task { @MainActor in
-                            appRouter.homeRouter.push(.detail(itemId: item.id))
+                            appRouter.homeRouter.navigate(to: .detail(itemId: item.id), style: .push)
                         }
                     }) {
                         ItemRow(item: item)
@@ -38,7 +38,7 @@ struct HomeView: View {
                     .swipeActions {
                         Button(role: .destructive) {
                             Task { @MainActor in
-                                appRouter.homeRouter.showAlert(HomeAlert(type: .deleteItem(itemId: item.id)))
+                                appRouter.homeRouter.showAlert(.error(title: "Error Title", message: "Error Message"))
                             }
                         } label: {
                             Label("Delete", systemImage: "trash")
@@ -53,7 +53,7 @@ struct HomeView: View {
                 if featureFlags.isEnabled(.featuredContent) {
                     Button("Featured") {
                         Task { @MainActor in
-                            appRouter.homeRouter.push(.featured)
+                            appRouter.homeRouter.navigate(to: .featured, style: .push)
                         }
                     }
                 }
@@ -62,12 +62,12 @@ struct HomeView: View {
                 Menu {
                     Button("New Item") {
                         Task { @MainActor in
-                            appRouter.homeRouter.presentSheet(.newItem)
+                            appRouter.homeRouter.navigate(to: .newItem, style: .sheet(detents: [.large]))
                         }
                     }
                     Button("Quick Add") {
                         Task { @MainActor in
-                            appRouter.homeRouter.presentSheet(.quickAdd)
+                            appRouter.homeRouter.navigate(to: .quickAdd, style: .sheet(detents: [.large]))
                         }
                     }
                 } label: {

@@ -34,16 +34,12 @@ struct ProfileView: View {
                     
                     HStack(spacing: 20) {
                         Button("Edit Profile") {
-                            Task { @MainActor in
-                                appRouter.profileRouter.presentSheet(.editProfile)
-                            }
+                            viewModel.navigate(to: .editProfile, style: .sheet(detents: [.large]))
                         }
                         .buttonStyle(.borderedProminent)
                         
                         Button("Share") {
-                            Task { @MainActor in
-                                appRouter.profileRouter.presentSheet(.shareProfile)
-                            }
+                            viewModel.navigate(to: .shareProfile, style: .sheet(detents: [.large]))
                         }
                         .buttonStyle(.bordered)
                     }
@@ -62,9 +58,7 @@ struct ProfileView: View {
                     }
                     
                     Button(action: {
-                        Task { @MainActor in
-                            appRouter.profileRouter.push(.followers(userId: userId))
-                        }
+                        viewModel.navigate(to: .followers(userId: userId), style: .push)
                     }) {
                         VStack {
                             Text("1.2K")
@@ -77,9 +71,7 @@ struct ProfileView: View {
                     }
                     
                     Button(action: {
-                        Task { @MainActor in
-                            appRouter.profileRouter.push(.following(userId: userId))
-                        }
+                        viewModel.navigate(to: .followers(userId: userId), style: .push)
                     }) {
                         VStack {
                             Text("456")
@@ -94,22 +86,21 @@ struct ProfileView: View {
                 
                 if featureFlags.isEnabled(.achievements) {
                     Button("View Achievements") {
-                        Task { @MainActor in
-                            appRouter.profileRouter.push(.achievements)
-                        }
+                        viewModel.navigate(to: .achievements, style: .push)
                     }
                     .buttonStyle(.bordered)
                 }
             }
+        }
+        .onAppear {
+            viewModel.loadUser()
         }
         .navigationTitle("Profile")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Settings") {
-                    Task { @MainActor in
-                        appRouter.profileRouter.push(.settings)
-                    }
+                    viewModel.navigate(to: .settings, style: .push)
                 }
             }
         }

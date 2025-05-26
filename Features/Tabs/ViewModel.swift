@@ -12,5 +12,4 @@ protocol ViewModel: Observable {
     associatedtype StoreType: Store
     
     var store: StoreType { get }
-    init(store: StoreType)
 }
