@@ -40,7 +40,7 @@ struct NavigationTests {
         
         // Test override
         await service.setOverride(.debugMenu, enabled: true)
-        #expect(service.isEnabled(.debugMenu) == false)
+        #expect(service.isEnabled(.debugMenu) == true)
         
         // Test clear overrides
         await service.clearOverrides()
