@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1EB5103E2DE0A0C800B2E978 /* GenericNavigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GenericNavigation.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1EB5104B2DE0A0CB00B2E978 /* GenericNavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenericNavigationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1EB510552DE0A0CB00B2E978 /* GenericNavigationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenericNavigationUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1EB5103E2DE0A0C800B2E978 /* GenericNavigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = GenericNavigation.app; path = "/Users/dylananderson/Desktop/Byte-Sized/Navigation/build/Debug-iphoneos/GenericNavigation.app"; sourceTree = "<absolute>"; };
+		1EB5104B2DE0A0CB00B2E978 /* GenericNavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = GenericNavigationTests.xctest; path = "/Users/dylananderson/Desktop/Byte-Sized/Navigation/build/Debug-iphoneos/GenericNavigation.app/PlugIns/GenericNavigationTests.xctest"; sourceTree = "<absolute>"; };
+		1EB510552DE0A0CB00B2E978 /* GenericNavigationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = GenericNavigationUITests.xctest; path = "/Users/dylananderson/Desktop/Byte-Sized/Navigation/build/Debug-iphoneos/GenericNavigationUITests-Runner.app/PlugIns/GenericNavigationUITests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -206,19 +206,8 @@
 				1EB514AA2DE0B08400B2E978 /* Root */,
 				1EB514A12DE0ADA200B2E978 /* Features */,
 				1EB510402DE0A0C800B2E978 /* GenericNavigation */,
-				1EB5103F2DE0A0C800B2E978 /* Products */,
 				1E92C1342DE49CB800A87642 /* Tests */,
 			);
-			sourceTree = "<group>";
-		};
-		1EB5103F2DE0A0C800B2E978 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1EB5103E2DE0A0C800B2E978 /* GenericNavigation.app */,
-				1EB5104B2DE0A0CB00B2E978 /* GenericNavigationTests.xctest */,
-				1EB510552DE0A0CB00B2E978 /* GenericNavigationUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -319,7 +308,7 @@
 			mainGroup = 1EB510352DE0A0C800B2E978;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 1EB5103F2DE0A0C800B2E978 /* Products */;
+			productRefGroup = 1EB510352DE0A0C800B2E978;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
