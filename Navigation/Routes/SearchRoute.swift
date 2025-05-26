@@ -8,19 +8,12 @@
 import Foundation
 
 enum SearchRoute: AppRoute {
-    case main
+    var id: Self { self }
+
     case results(query: String)
-    case filters
     case advanced
-    
-    var id: String {
-        switch self {
-        case .main: return "search.main"
-        case .results(let query): return "search.results.\(query)"
-        case .filters: return "search.filters"
-        case .advanced: return "search.advanced"
-        }
-    }
+    case filters(currentFilters: SearchFilters)
+    case saveSearch(query: String)
     
     var featureFlagKey: FeatureFlag? {
         switch self {

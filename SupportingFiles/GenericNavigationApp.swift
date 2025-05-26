@@ -13,7 +13,7 @@ struct GenericNavigationApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Environment(\.scenePhase) var scenePhase
     @State private var appRouter = AppRouter()
-    @State private var deepLinkHandler = DeepLinkHandler()
+    @State private var deepLinkHandler = DeepLinkManager()
     @State private var featureFlags = FeatureFlagService()
     @State private var dependencies = AppDependencies()
     @AppStorage("environment") private var environment: AppEnvironment = .production
@@ -27,9 +27,7 @@ struct GenericNavigationApp: App {
                 .environment(dependencies)
                 .environment(\.appEnvironment, environment)
                 .onOpenURL { url in
-                    Task {
-                        await deepLinkHandler.handle(url, featureFlags: featureFlags)
-                    }
+                    appRouter.handleDeepLink(url: url)
                 }
                 .onChange(of: scenePhase) { _, newPhase in
                     Task {

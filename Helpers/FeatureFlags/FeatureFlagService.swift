@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#warning("make me a protocol")
 @Observable
 final class FeatureFlagService: @unchecked Sendable {
     var enabledFlags: FeatureFlag = []

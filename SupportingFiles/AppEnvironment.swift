@@ -42,9 +42,8 @@ private struct AppDependencyKey: EnvironmentKey {
 }
 
 private struct DeepLinkHandlerKey: EnvironmentKey {
-    static let defaultValue = DeepLinkHandler()
+    static let defaultValue = DeepLinkManager()
 }
-
 
 extension EnvironmentValues {
     var appEnvironment: AppEnvironment {
@@ -72,7 +71,7 @@ extension EnvironmentValues {
         set { self[AppDependencyKey.self] = newValue }
     }
     
-    var deepLinkHandler: DeepLinkHandler {
+    var deepLinkHandler: DeepLinkManager {
         get { self[DeepLinkHandlerKey.self] }
         set { self[DeepLinkHandlerKey.self] = newValue }
     }

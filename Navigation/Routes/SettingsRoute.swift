@@ -8,23 +8,16 @@
 import Foundation
 
 enum SettingsRoute: AppRoute {
-    case main
+    var id: Self { self }
+
     case account
     case privacy
     case notifications
     case appearance
     case debug
-    
-    var id: String {
-        switch self {
-        case .main: return "settings.main"
-        case .account: return "settings.account"
-        case .privacy: return "settings.privacy"
-        case .notifications: return "settings.notifications"
-        case .appearance: return "settings.appearance"
-        case .debug: return "settings.debug"
-        }
-    }
+    case premium
+    case exportData
+    case deleteAccount
     
     var featureFlagKey: FeatureFlag? {
         return nil

@@ -30,10 +30,18 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1EA8C7AC2DE4112000054B92 /* Exceptions for "GenericNavigation" folder in "GenericNavigation" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 1EB5103D2DE0A0C800B2E978 /* GenericNavigation */;
+		};
 		1EB514A52DE0B04D00B2E978 /* Exceptions for "Helpers" folder in "GenericNavigation" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Deeplink/DeepLink.swift,
+				Deeplink/DeepLinkError.swift,
 				Deeplink/DeepLinkHandler.swift,
 				FeatureFlags/FeatureFlag.swift,
 				FeatureFlags/FeatureFlagService.swift,
@@ -102,7 +110,6 @@
 				Tabs/Settings/SettingView.swift,
 				Tabs/Settings/SettingViewModel.swift,
 				Tabs/TabItem.swift,
-				Tabs/TabNavigationView.swift,
 				Tabs/ViewModel.swift,
 			);
 			target = 1EB5103D2DE0A0C800B2E978 /* GenericNavigation */;
@@ -110,21 +117,21 @@
 		1EB514B72DE0B14300B2E978 /* Exceptions for "Navigation" folder in "GenericNavigation" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Alerts/HomeAlert.swift,
-				Alerts/ProfileAlert.swift,
-				Alerts/SearchAlert.swift,
-				Alerts/SettingAlert.swift,
-				AppRoute.swift,
+				Alerts/Alert.swift,
 				AppRouter.swift,
+				NavigationCoordinator.swift,
+				NavigationViewWrapper.swift,
+				RoutableNavigation.swift,
 				Router.swift,
 				Routes/HomeRoute.swift,
 				Routes/ProfileRoute.swift,
 				Routes/SearchRoute.swift,
 				Routes/SettingsRoute.swift,
-				Sheets/HomeSheet.swift,
-				Sheets/ProfileSheet.swift,
-				Sheets/SearchSheet.swift,
-				Sheets/SettingsSheet.swift,
+				Routing/AppRoute.swift,
+				Routing/NavigationRoute.swift,
+				Routing/NavigationStyle.swift,
+				Routing/SheetItem.swift,
+				Routing/WebRoute.swift,
 				TabNavigatorWrapper.swift,
 			);
 			target = 1EB5103D2DE0A0C800B2E978 /* GenericNavigation */;
@@ -174,6 +181,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		1EB510402DE0A0C800B2E978 /* GenericNavigation */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1EA8C7AC2DE4112000054B92 /* Exceptions for "GenericNavigation" folder in "GenericNavigation" target */,
+			);
 			path = GenericNavigation;
 			sourceTree = "<group>";
 		};
@@ -616,6 +626,7 @@
 				DEVELOPMENT_TEAM = 6NDRN8ASFY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GenericNavigation/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -648,6 +659,7 @@
 				DEVELOPMENT_TEAM = 6NDRN8ASFY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GenericNavigation/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

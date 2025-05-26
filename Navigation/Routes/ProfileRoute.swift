@@ -7,24 +7,18 @@
 
 
 import Foundation
+
 enum ProfileRoute: AppRoute {
-    case main(userId: String)
+    var id: Self { self }
+
     case edit
     case settings
     case achievements
     case followers(userId: String)
     case following(userId: String)
-    
-    var id: String {
-        switch self {
-        case .main(let id): return "profile.main.\(id)"
-        case .edit: return "profile.edit"
-        case .settings: return "profile.settings"
-        case .achievements: return "profile.achievements"
-        case .followers(let id): return "profile.followers.\(id)"
-        case .following(let id): return "profile.following.\(id)"
-        }
-    }
+    case editProfile
+    case changePhoto
+    case shareProfile
     
     var featureFlagKey: FeatureFlag? {
         switch self {

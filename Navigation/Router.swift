@@ -8,52 +8,46 @@
 import Foundation
 import SwiftUI
 
-typealias HomeRouter = Router<HomeRoute, HomeSheet, HomeAlert>
-typealias SearchRouter = Router<SearchRoute, SearchSheet, Never>
-typealias ProfileRouter = Router<ProfileRoute, ProfileSheet, ProfileAlert>
-typealias SettingsRouter = Router<SettingsRoute, SettingsSheet, Never>
+typealias HomeRouter = Router<HomeRoute, AppAlert>
+typealias SearchRouter = Router<SearchRoute, AppAlert>
+typealias ProfileRouter = Router<ProfileRoute, AppAlert>
+typealias SettingsRouter = Router<SettingsRoute, AppAlert>
 
 @Observable
-final class Router<Route: AppRoute, Sheet: Identifiable & Sendable, Alert: Identifiable & Sendable>: @unchecked Sendable {
-    var path = NavigationPath()
-    var presentedSheet: Sheet?
-    var alertItem: Alert?
-    
-    @MainActor
-    func push(_ route: Route) {
-        path.append(route)
-    }
-    
-    @MainActor
-    func pop() {
-        if !path.isEmpty {
-            path.removeLast()
+final class Router<Route: AppRoute, Alert: Identifiable & Sendable>: @unchecked Sendable, RoutableNavigation {
+    func navigate(to route: Route, style: NavigationStyle) {
+        switch style {
+        case .push:
+            navigationPath.append(route)
+        case .sheet(let detents):
+            sheetItem = SheetItem(route: route, detents: detents)
         }
     }
     
-    @MainActor
+    func navigateToWebView(_ webRoute: WebRoute) {
+        navigationPath.append(webRoute)
+    }
+    
+    var navigationPath = NavigationPath()
+    var sheetItem: SheetItem<Route>?
+    var alertItem: AppAlert?
+    
+    func popLast() {
+        if !navigationPath.isEmpty {
+            navigationPath.removeLast()
+        }
+    }
+    
     func popToRoot() {
-        path = NavigationPath()
+        navigationPath = NavigationPath()
     }
     
-    @MainActor
     func setRoot(_ route: Route) {
-        path = NavigationPath()
-        path.append(route)
+        navigationPath = NavigationPath()
+        navigationPath.append(route)
     }
     
-    @MainActor
-    func presentSheet(_ sheet: Sheet) {
-        presentedSheet = sheet
-    }
-    
-    @MainActor
-    func dismissSheet() {
-        presentedSheet = nil
-    }
-    
-    @MainActor
-    func showAlert(_ alert: Alert) {
+    func showAlert(_ alert: AppAlert) {
         alertItem = alert
     }
 }

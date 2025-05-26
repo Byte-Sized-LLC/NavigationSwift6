@@ -22,16 +22,6 @@ struct RootView: View {
                 OnboardingFlow()
             }
         }
-        .onChange(of: deepLinkHandler.pendingDeepLink) { _, deepLink in
-            Task {
-                if let deepLink = deepLink {
-                    await appRouter.handleDeepLink(deepLink, featureFlags: featureFlags)
-                    await MainActor.run {
-                        deepLinkHandler.pendingDeepLink = nil
-                    }
-                }
-            }
-        }
         .overlay(alignment: .topTrailing) {
             if featureFlags.isEnabled(.debugMenu) {
                 debugButton

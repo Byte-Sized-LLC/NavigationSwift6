@@ -17,7 +17,7 @@ struct SearchView: View {
             SearchBar(text: $searchText) {
                 if !searchText.isEmpty {
                     Task { @MainActor in
-                        appRouter.searchRouter.push(.results(query: searchText))
+                        appRouter.searchRouter.navigate(to: .results(query: searchText), style: .push)
                     }
                 }
             }
@@ -28,7 +28,7 @@ struct SearchView: View {
                         Button(action: {
                             searchText = recent
                             Task { @MainActor in
-                                appRouter.searchRouter.push(.results(query: recent))
+                                appRouter.searchRouter.navigate(to: .results(query: recent), style: .push)
                             }
                         }) {
                             HStack {
@@ -43,7 +43,7 @@ struct SearchView: View {
                     Section {
                         Button("Advanced Search") {
                             Task { @MainActor in
-                                appRouter.searchRouter.push(.advanced)
+                                appRouter.searchRouter.navigate(to: .advanced, style: .push)
                             }
                         }
                     }
@@ -55,7 +55,7 @@ struct SearchView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Filters") {
                     Task { @MainActor in
-                        appRouter.searchRouter.presentSheet(.filters(currentFilters: SearchFilters()))
+                        appRouter.searchRouter.navigate(to: .filters(currentFilters: SearchFilters()), style: .sheet(detents: [.large]))
                     }
                 }
             }

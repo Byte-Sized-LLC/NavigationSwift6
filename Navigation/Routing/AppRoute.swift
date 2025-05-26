@@ -8,6 +8,6 @@
 import Foundation
 
 protocol AppRoute: Hashable, Identifiable, Sendable {
-    var id: String { get }
+    var id: Self { get }
     var featureFlagKey: FeatureFlag? { get }
 }

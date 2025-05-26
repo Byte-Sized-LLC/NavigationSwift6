@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SearchFilters: Sendable {
+struct SearchFilters: Hashable, Sendable {
     var categories: Set<String> = []
     var priceRange: ClosedRange<Double> = 0...100
     var sortBy: SortOption = .relevance

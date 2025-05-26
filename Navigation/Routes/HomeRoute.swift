@@ -8,19 +8,15 @@
 import Foundation
 
 enum HomeRoute: AppRoute {
+    var id: Self { self }
+
     case list
     case detail(itemId: String)
     case category(categoryId: String)
     case featured
-    
-    var id: String {
-        switch self {
-        case .list: return "home.list"
-        case .detail(let id): return "home.detail.\(id)"
-        case .category(let id): return "home.category.\(id)"
-        case .featured: return "home.featured"
-        }
-    }
+    case newItem
+    case share(itemId: String)
+    case quickAdd
     
     var featureFlagKey: FeatureFlag? {
         switch self {
