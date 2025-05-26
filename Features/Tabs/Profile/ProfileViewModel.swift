@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 @Observable
 final class ProfileViewModel: ViewModel {
-    private let navigationCoordinator: NavigationCoordinator
+    private let navigationCoordinator: NavigationManager
 
     let store: ProfileStore
     private(set) var viewState = ViewState()
@@ -22,7 +22,7 @@ final class ProfileViewModel: ViewModel {
         var hasUnsavedChanges = false
     }
     
-    required init(store: ProfileStore, navigationCoordinator: NavigationCoordinator) {
+    required init(store: ProfileStore, navigationCoordinator: NavigationManager) {
         self.store = store
         self.navigationCoordinator = navigationCoordinator
         Task {

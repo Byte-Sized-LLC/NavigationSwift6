@@ -1,6 +1,6 @@
 import SwiftUI
 
-protocol NavigationCoordinator: Observable {
+protocol NavigationManager: Observable {
     func navigate(to route: any AppRoute, style: NavigationStyle)
     func navigate(to route: any AppRoute, style: NavigationStyle, resetRoot: Bool)
     func navigate(to: RootTab)
@@ -8,7 +8,7 @@ protocol NavigationCoordinator: Observable {
     func showAlert(_ alert: AppAlert)
 }
 
-extension AppRouter: @preconcurrency NavigationCoordinator {
+extension AppRouter: @preconcurrency NavigationManager {
     @MainActor
     func navigate(to route: any AppRoute, style: NavigationStyle) {
         switch route {

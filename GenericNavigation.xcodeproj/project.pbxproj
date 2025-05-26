@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1EB5103E2DE0A0C800B2E978 /* GenericNavigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = GenericNavigation.app; path = "/Users/dylananderson/Desktop/Byte-Sized/Navigation/build/Debug-iphoneos/GenericNavigation.app"; sourceTree = "<absolute>"; };
-		1EB5104B2DE0A0CB00B2E978 /* GenericNavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = GenericNavigationTests.xctest; path = "/Users/dylananderson/Desktop/Byte-Sized/Navigation/build/Debug-iphoneos/GenericNavigation.app/PlugIns/GenericNavigationTests.xctest"; sourceTree = "<absolute>"; };
-		1EB510552DE0A0CB00B2E978 /* GenericNavigationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = GenericNavigationUITests.xctest; path = "/Users/dylananderson/Desktop/Byte-Sized/Navigation/build/Debug-iphoneos/GenericNavigationUITests-Runner.app/PlugIns/GenericNavigationUITests.xctest"; sourceTree = "<absolute>"; };
+		1E285A572DE4A887004959D1 /* GenericNavigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GenericNavigation.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E285A582DE4A887004959D1 /* GenericNavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenericNavigationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E285A592DE4A887004959D1 /* GenericNavigationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenericNavigationUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -207,6 +207,9 @@
 				1EB514A12DE0ADA200B2E978 /* Features */,
 				1EB510402DE0A0C800B2E978 /* GenericNavigation */,
 				1E92C1342DE49CB800A87642 /* Tests */,
+				1E285A572DE4A887004959D1 /* GenericNavigation.app */,
+				1E285A582DE4A887004959D1 /* GenericNavigationTests.xctest */,
+				1E285A592DE4A887004959D1 /* GenericNavigationUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -232,7 +235,7 @@
 			packageProductDependencies = (
 			);
 			productName = GenericNavigation;
-			productReference = 1EB5103E2DE0A0C800B2E978 /* GenericNavigation.app */;
+			productReference = 1E285A572DE4A887004959D1 /* GenericNavigation.app */;
 			productType = "com.apple.product-type.application";
 		};
 		1EB5104A2DE0A0CB00B2E978 /* GenericNavigationTests */ = {
@@ -252,7 +255,7 @@
 			packageProductDependencies = (
 			);
 			productName = GenericNavigationTests;
-			productReference = 1EB5104B2DE0A0CB00B2E978 /* GenericNavigationTests.xctest */;
+			productReference = 1E285A582DE4A887004959D1 /* GenericNavigationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		1EB510542DE0A0CB00B2E978 /* GenericNavigationUITests */ = {
@@ -272,7 +275,7 @@
 			packageProductDependencies = (
 			);
 			productName = GenericNavigationUITests;
-			productReference = 1EB510552DE0A0CB00B2E978 /* GenericNavigationUITests.xctest */;
+			productReference = 1E285A592DE4A887004959D1 /* GenericNavigationUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */

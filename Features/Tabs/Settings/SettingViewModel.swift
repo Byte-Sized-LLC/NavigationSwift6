@@ -11,10 +11,10 @@ import SwiftUI
 @MainActor
 @Observable
 final class SettingsViewModel {
-    private let navigationCoordinator: NavigationCoordinator
+    private let navigationCoordinator: NavigationManager
     private let featureFlagService: FeatureFlagService
     
-    init(navigationCoordinator: NavigationCoordinator, featureFlagService: FeatureFlagService) {
+    init(navigationCoordinator: NavigationManager, featureFlagService: FeatureFlagService) {
         self.navigationCoordinator = navigationCoordinator
         self.featureFlagService = featureFlagService
     }

@@ -4,13 +4,13 @@ import SwiftUI
 @MainActor
 @Observable
 final class CategoryViewModel {
-    let navigationCoordinator: NavigationCoordinator
+    let navigationCoordinator: NavigationManager
     private let userService: UserService
 
     var categoryId: String
     var fetchedUser: User?
     
-    init(categoryId: String, navigationCoordinator: NavigationCoordinator, userService: UserService) {
+    init(categoryId: String, navigationCoordinator: NavigationManager, userService: UserService) {
         self.categoryId = categoryId
         self.navigationCoordinator = navigationCoordinator
         self.userService = userService
