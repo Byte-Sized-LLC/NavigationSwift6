@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1E285A572DE4A887004959D1 /* GenericNavigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GenericNavigation.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E285A582DE4A887004959D1 /* GenericNavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenericNavigationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E285A592DE4A887004959D1 /* GenericNavigationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GenericNavigationUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E285A572DE4A887004959D1 /* GenericNavigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = GenericNavigation.app; path = "/Users/dylananderson/Desktop/Projects/Navigation/build/Debug-iphoneos/GenericNavigation.app"; sourceTree = "<absolute>"; };
+		1E285A582DE4A887004959D1 /* GenericNavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = GenericNavigationTests.xctest; path = "/Users/dylananderson/Desktop/Projects/Navigation/build/Debug-iphoneos/GenericNavigation.app/PlugIns/GenericNavigationTests.xctest"; sourceTree = "<absolute>"; };
+		1E285A592DE4A887004959D1 /* GenericNavigationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = GenericNavigationUITests.xctest; path = "/Users/dylananderson/Desktop/Projects/Navigation/build/Debug-iphoneos/GenericNavigationUITests-Runner.app/PlugIns/GenericNavigationUITests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -207,9 +207,6 @@
 				1EB514A12DE0ADA200B2E978 /* Features */,
 				1EB510402DE0A0C800B2E978 /* GenericNavigation */,
 				1E92C1342DE49CB800A87642 /* Tests */,
-				1E285A572DE4A887004959D1 /* GenericNavigation.app */,
-				1E285A582DE4A887004959D1 /* GenericNavigationTests.xctest */,
-				1E285A592DE4A887004959D1 /* GenericNavigationUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
