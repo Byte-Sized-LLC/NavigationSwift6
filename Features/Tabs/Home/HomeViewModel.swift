@@ -25,10 +25,6 @@ final class HomeViewModel: ViewModel {
         startObserving()
     }
     
-//    deinit {
-//        stateObservationTask?.cancel()
-//    }
-    
     private func startObserving() {
         stateObservationTask = Task { [weak self] in
             guard let self else { return }
@@ -41,6 +37,11 @@ final class HomeViewModel: ViewModel {
                 self.viewState.error = state.error
             }
         }
+    }
+    
+    @MainActor
+    func stopObserving() {
+        stateObservationTask?.cancel()
     }
     
     func loadItems() {

@@ -47,6 +47,7 @@ struct HomeView: View {
                 }
             }
         }
+        .onDisappear { viewModel.stopObserving() }
         .navigationTitle("Home")
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
