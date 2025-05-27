@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DetailView: View {
     let itemId: String
-    @Environment(\.appRouter) private var appRouter
+    @Environment(AppRouter.self) private var appRouter
     
     var body: some View {
         VStack {

@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SettingsNavigationView: View {
-    @Environment(\.appRouter) private var appRouter
-    @Environment(\.featureFlags) private var featureFlagService
+    @Environment(AppRouter.self) private var appRouter
+    @Environment(FeatureFlagService.self) private var featureFlagService
     
     var body: some View {
         TabNavigationWrapper(
@@ -23,8 +23,6 @@ struct SettingsNavigationView: View {
                 destinationView(for: route)
             }
         )
-        .environment(\.appRouter, appRouter)
-        .environment(\.featureFlags, featureFlagService)
     }
     
     @ViewBuilder

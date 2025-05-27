@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @Environment(\.appRouter) private var appRouter
-    @Environment(\.appDependencies) private var dependencies
+    @Environment(AppRouter.self) private var appRouter
+    @Environment(AppDependencies.self) private var dependencies
     
     var body: some View {
         @Bindable var router = appRouter

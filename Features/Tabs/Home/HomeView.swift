@@ -9,8 +9,8 @@ import SwiftUI
 
 struct HomeView: View {
     @Bindable var viewModel: HomeViewModel
-    @Environment(\.appRouter) private var appRouter
-    @Environment(\.featureFlags) private var featureFlags
+    @Environment(AppRouter.self) private var appRouter
+    @Environment(FeatureFlagService.self) private var featureFlags
     
     var body: some View {
         Group {

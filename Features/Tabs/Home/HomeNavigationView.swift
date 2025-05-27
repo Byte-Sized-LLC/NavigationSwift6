@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct HomeNavigationView: View {
-    @Environment(\.appRouter) private var appRouter
-    @Environment(\.appDependencies) private var dependencies
+    @Environment(AppRouter.self) private var appRouter
+    @Environment(AppDependencies.self) private var dependencies
     @State private var viewModel: HomeViewModel
     
     init() {

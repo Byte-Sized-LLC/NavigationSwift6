@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct RootView: View {
-    @Environment(\.appRouter) private var appRouter
-    @Environment(\.deepLinkHandler) private var deepLinkHandler
-    @Environment(\.appDependencies) private var dependencies
-    @Environment(\.featureFlags) private var featureFlags
+    @Environment(AppRouter.self) private var appRouter
+    @Environment(AppDependencies.self) private var dependencies
+    @Environment(FeatureFlagService.self) private var featureFlags
     @State private var showDebugMenu = false
     
     var body: some View {
