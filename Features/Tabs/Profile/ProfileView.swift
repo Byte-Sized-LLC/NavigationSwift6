@@ -10,8 +10,8 @@ import SwiftUI
 struct ProfileView: View {
     @Bindable var viewModel: ProfileViewModel
     let userId: String
-    @Environment(\.appRouter) private var appRouter
-    @Environment(\.featureFlags) private var featureFlags
+    @Environment(AppRouter.self) private var appRouter
+    @Environment(FeatureFlagService.self) private var featureFlags
     
     var body: some View {
         ScrollView {

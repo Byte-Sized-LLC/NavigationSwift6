@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct DebugSettingsView: View {
-    @Environment(\.featureFlags) private var featureFlags
-    @Environment(\.appRouter) private var appRouter
+    @Environment(FeatureFlagService.self) private var featureFlags
+    @Environment(AppRouter.self) private var appRouter
     @AppStorage("environment") private var environment: AppEnvironment = .production
     @Environment(\.dismiss) var dismiss
     

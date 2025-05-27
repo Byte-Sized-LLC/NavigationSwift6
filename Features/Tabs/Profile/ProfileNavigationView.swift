@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ProfileNavigationView: View {
-    @Environment(\.appRouter) private var appRouter
-    @Environment(\.appDependencies) private var dependencies
+    @Environment(AppRouter.self) private var appRouter
+    @Environment(AppDependencies.self) private var dependencies
     
     var body: some View {
         TabNavigationWrapper(
@@ -17,7 +17,7 @@ struct ProfileNavigationView: View {
             router: appRouter.profileRouter,
             content: {
                 let store = ProfileStore(dependencies: dependencies)
-                let viewModel = ProfileViewModel(store: store, navigationCoordinator: appRouter)
+                let viewModel = ProfileViewModel(store: store, navigationManager: appRouter)
                 ProfileView(viewModel: viewModel, userId: "current")
             },
             destinationBuilder: { route in

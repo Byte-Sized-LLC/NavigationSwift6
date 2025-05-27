@@ -11,44 +11,44 @@ import SwiftUI
 @MainActor
 @Observable
 final class SettingsViewModel {
-    private let navigationCoordinator: NavigationManager
+    private let navigationManager: NavigationManager
     private let featureFlagService: FeatureFlagService
     
-    init(navigationCoordinator: NavigationManager, featureFlagService: FeatureFlagService) {
-        self.navigationCoordinator = navigationCoordinator
+    init(navigationManager: NavigationManager, featureFlagService: FeatureFlagService) {
+        self.navigationManager = navigationManager
         self.featureFlagService = featureFlagService
     }
     
     func navigateToAccount() {
-        navigationCoordinator.navigate(to: SettingsRoute.account, style: .push)
+        navigationManager.navigate(to: SettingsRoute.account, style: .push)
     }
     
     func navigateToPrivacy() {
-        navigationCoordinator.navigate(to: SettingsRoute.privacy, style: .push)
+        navigationManager.navigate(to: SettingsRoute.privacy, style: .push)
     }
     
     func navigateToNotifications() {
-        navigationCoordinator.navigate(to: SettingsRoute.notifications, style: .push)
+        navigationManager.navigate(to: SettingsRoute.notifications, style: .push)
     }
     
     func navigateToAppearance() {
-        navigationCoordinator.navigate(to: SettingsRoute.appearance, style: .push)
+        navigationManager.navigate(to: SettingsRoute.appearance, style: .push)
     }
     
     func navigateToDebug() {
-        navigationCoordinator.navigate(to: SettingsRoute.debug, style: .push)
+        navigationManager.navigate(to: SettingsRoute.debug, style: .push)
     }
     
     func navigateToPremium() {
-        navigationCoordinator.navigate(to: SettingsRoute.premium, style: .sheet(detents: [.large]))
+        navigationManager.navigate(to: SettingsRoute.premium, style: .sheet(detents: [.large]))
     }
     
     func navigateToExportData() {
-        navigationCoordinator.navigate(to: SettingsRoute.exportData, style: .sheet(detents: [.large]))
+        navigationManager.navigate(to: SettingsRoute.exportData, style: .sheet(detents: [.large]))
     }
     
     func navigateToDeleteAccount() {
-        navigationCoordinator.navigate(to: SettingsRoute.deleteAccount, style: .sheet(detents: [.large]))
+        navigationManager.navigate(to: SettingsRoute.deleteAccount, style: .sheet(detents: [.large]))
     }
     
     var isPremiumEnabled: Bool {

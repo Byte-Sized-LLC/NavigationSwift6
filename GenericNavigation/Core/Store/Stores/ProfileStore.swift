@@ -10,7 +10,8 @@ import Foundation
 actor ProfileStore: Store {
     private var state: ProfileState
     private let dependencies: AppDependencies
-    
+    private var continuation: AsyncStream<ProfileState>.Continuation?
+
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
         self.state = ProfileState()
@@ -30,6 +31,13 @@ actor ProfileStore: Store {
         case updateProfile(UserProfile)
         case profileUpdated
         case setUnsavedChanges(Bool)
+    }
+    
+    var stateStream: AsyncStream<ProfileState> {
+        AsyncStream { continuation in
+            self.continuation = continuation
+            continuation.yield(state)
+        }
     }
     
     func getState() -> ProfileState {

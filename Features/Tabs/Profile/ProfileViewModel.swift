@@ -10,10 +10,11 @@ import Foundation
 @MainActor
 @Observable
 final class ProfileViewModel: ViewModel {
-    private let navigationCoordinator: NavigationManager
-
+    private let navigationManager: NavigationManager
+    
     let store: ProfileStore
     private(set) var viewState = ViewState()
+    private var stateObservationTask: Task<Void, Never>?
     
     struct ViewState {
         var user: User?
@@ -22,21 +23,28 @@ final class ProfileViewModel: ViewModel {
         var hasUnsavedChanges = false
     }
     
-    required init(store: ProfileStore, navigationCoordinator: NavigationManager) {
+    required init(store: ProfileStore, navigationManager: NavigationManager) {
         self.store = store
-        self.navigationCoordinator = navigationCoordinator
-        Task {
-            await observeState()
-        }
+        self.navigationManager = navigationManager
+        startObserving()
     }
     
-    private func observeState() async {
-        for await _ in Timer.publish(every: 0.1, on: .main, in: .common).autoconnect().values {
-            let state = await store.getState()
-            viewState.user = state.user
-            viewState.isLoading = state.isLoading
-            viewState.error = state.error
-            viewState.hasUnsavedChanges = state.hasUnsavedChanges
+//    deinit {
+//        stateObservationTask?.cancel()
+//    }
+    
+    private func startObserving() {
+        stateObservationTask = Task { [weak self] in
+            guard let self else { return }
+            
+            for await state in await store.stateStream {
+                guard !Task.isCancelled else { break }
+                
+                self.viewState.user = state.user
+                self.viewState.isLoading = state.isLoading
+                self.viewState.error = state.error
+                self.viewState.hasUnsavedChanges = state.hasUnsavedChanges
+            }
         }
     }
     
@@ -53,6 +61,6 @@ final class ProfileViewModel: ViewModel {
     }
     
     func navigate(to route: ProfileRoute, style: NavigationStyle) {
-        navigationCoordinator.navigate(to: route, style: style)
+        navigationManager.navigate(to: route, style: style)
     }
 }

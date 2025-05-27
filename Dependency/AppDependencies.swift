@@ -13,14 +13,18 @@ final class AppDependencies: DependencyContainerProtocol, @unchecked Sendable {
     typealias User = UserService
     typealias Analytics = AnalyticsService
     
-    let apiService: APIService
-    let userService: UserService
-    let analyticsService: AnalyticsService
+    private let lazy = LazyAppDependencies()
     
-    init() {
-        self.apiService = APIService()
-        self.userService = UserService(apiService: apiService)
-        self.analyticsService = AnalyticsService()
+    var apiService: APIService {
+        lazy.apiService
+    }
+    
+    var userService: UserService {
+        lazy.userService
+    }
+    
+    var analyticsService: AnalyticsService {
+        lazy.analyticsService
     }
 }
 

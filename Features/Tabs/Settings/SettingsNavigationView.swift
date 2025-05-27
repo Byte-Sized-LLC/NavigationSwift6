@@ -8,23 +8,21 @@
 import SwiftUI
 
 struct SettingsNavigationView: View {
-    @Environment(\.appRouter) private var appRouter
-    @Environment(\.featureFlags) private var featureFlagService
+    @Environment(AppRouter.self) private var appRouter
+    @Environment(FeatureFlagService.self) private var featureFlagService
     
     var body: some View {
         TabNavigationWrapper(
             tab: .settings,
             router: appRouter.settingsRouter,
             content: {
-                let viewModel = SettingsViewModel(navigationCoordinator: appRouter, featureFlagService: featureFlagService)
+                let viewModel = SettingsViewModel(navigationManager: appRouter, featureFlagService: featureFlagService)
                 SettingsView(viewModel: viewModel)
             },
             destinationBuilder: { route in
                 destinationView(for: route)
             }
         )
-        .environment(\.appRouter, appRouter)
-        .environment(\.featureFlags, featureFlagService)
     }
     
     @ViewBuilder
