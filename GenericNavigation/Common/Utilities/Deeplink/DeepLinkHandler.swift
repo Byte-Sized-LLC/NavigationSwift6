@@ -10,161 +10,202 @@ import Foundation
 @Observable
 final class DeepLinkManager: @unchecked Sendable {
     private let featureFlagManager: FeatureFlagService
-    private let supportedDomains = ["jetblue.com", "www.jetblue.com"]
+    private let supportedDomains = ["example.com", "www.example.com"]
     
     init(featureFlagManager: FeatureFlagService = FeatureFlagService()) {
         self.featureFlagManager = featureFlagManager
     }
     
     func parse(url: URL) -> Result<NavigationRoute, DeepLinkError> {
-        /// If this is an external HTTPS link (not one of our known deep‑link domains), treat it as a website link.
-        if isExternalWebLink(url) {
-            return .success(.weblink(WebRoute(url: url)))
+        // Handle custom scheme (navigation://)
+        if url.scheme == "navigation" {
+            return parseCustomScheme(url: url)
         }
         
-        let components = extractRouteComponents(url: url)
-        guard !components.isEmpty else {
+        // Handle universal links (https://)
+        if url.scheme == "https" || url.scheme == "http" {
+            return parseUniversalLink(url: url)
+        }
+        
+        return .failure(.missingRouteComponents)
+    }
+    
+    private func parseCustomScheme(url: URL) -> Result<NavigationRoute, DeepLinkError> {
+        // Custom scheme format: navigation://[tab]/[route]?[params]
+        // Examples:
+        // navigation://home/detail?itemId=123
+        // navigation://profile/followers?userId=456
+        // navigation://search
+        // navigation://settings/account
+        
+        guard let host = url.host else {
             return .failure(.missingRouteComponents)
         }
         
-        /// Try to parse a native route from the URL.
-        guard let nativeRoute = parseNativeRoute(from: components, url: url) else {
-            /// For universal links, fall back to a webview; otherwise, report error.
-            return isUniversalLink(url) ? .success(.weblink(WebRoute(url: url))) : .failure(.noNativeRouteFound)
-        }
+        let pathComponents = url.pathComponents.filter { $0 != "/" }
         
-        /// Validate the native route (e.g. against feature flags).
-        return validateRoute(nativeRoute, for: url)
-    }
-    
-    /// Returns true if the URL (or its assumed HTTPS form) uses HTTPS and its host is not in our supported domains.
-    private func isExternalWebLink(_ url: URL) -> Bool {
-        let scheme = url.scheme?.lowercased() ?? "https"
-        let host = extractHost(from: url)
-        guard scheme == "https", let host = host else { return false }
-        return !supportedDomains.contains(host)
-    }
-    
-    /// Returns true if the URL (or its assumed HTTPS form) uses HTTPS and its host is in our supported domains.
-    private func isUniversalLink(_ url: URL) -> Bool {
-        let scheme = url.scheme?.lowercased() ?? "https"
-        let host = extractHost(from: url)
-        guard scheme == "https", let host = host else { return false }
-        return supportedDomains.contains(host)
-    }
-    
-    /// If the URL’s host property is nil, try to extract it from the absolute string.
-    private func extractHost(from url: URL) -> String? {
-        if let host = url.host?.lowercased() {
-            return host
-        }
-        // Fallback: split the absolute string and check the first component.
-        let comps = url.absoluteString.components(separatedBy: "/").filter { !$0.isEmpty }
-        if let first = comps.first, first.contains(".") {
-            return first.lowercased()
-        }
-        return nil
-    }
-    
-    /// Returns an array of normalized route components.
-    /// - For HTTPS links (or missing scheme), returns the path components (e.g. ["mytrips", "tripdetail"]).
-    /// - For custom-scheme links, includes the host as the first component.
-    private func extractRouteComponents(url: URL) -> [String] {
-        if let scheme = url.scheme?.lowercased(), scheme == "https" {
-            return url.pathComponents.filter { $0 != "/" }.map { $0.lowercased() }
-        } else if url.scheme == nil {
-            let absolute = url.absoluteString
-            let comps = absolute.components(separatedBy: "/").filter { !$0.isEmpty }
-            if let first = comps.first, first.contains(".") {
-                return Array(comps.dropFirst()).map { $0.lowercased() }
-            } else {
-                return comps.map { $0.lowercased() }
-            }
-        } else {
-            var components: [String] = []
-            if let host = url.host?.lowercased() {
-                components.append(host)
-            }
-            components.append(contentsOf: url.pathComponents.filter { $0 != "/" }.map { $0.lowercased() })
-            return components
-        }
-    }
-    
-    /// Extracts the first query parameter's value (if any).
-    private func extractQueryParam(url: URL) -> String {
-        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems
-        return queryItems?.first?.value ?? ""
-    }
-    
-    private func parseNativeRoute(from components: [String], url: URL) -> NavigationRoute? {
-        // The first component identifies the tab/section.
-        let identifier = components[0]
-        switch identifier {
+        switch host {
         case "home":
-            return parseHomeRoute(from: components, url: url)
+            return parseHomeDeepLink(pathComponents: pathComponents, url: url)
         case "profile":
-            return parseProfileRoute(from: components, url: url)
+            return parseProfileDeepLink(pathComponents: pathComponents, url: url)
         case "search":
-            return .rootTab(.search)
+            return parseSearchDeepLink(pathComponents: pathComponents, url: url)
         case "settings":
-            return .rootTab(.settings)
+            return parseSettingsDeepLink(pathComponents: pathComponents, url: url)
         default:
-            return nil
+            return .failure(.noNativeRouteFound)
         }
     }
     
-    private func parseHomeRoute(from components: [String], url: URL) -> NavigationRoute {
-        if components.count >= 2, components[1] == "detail" {
-            let param = extractQueryParam(url: url)
-            return .home(.detail(itemId: param), style: .push)
-        }
-        return .rootTab(.home)
-    }
-    
-    private func parseProfileRoute(from components: [String], url: URL) -> NavigationRoute {
-        if components.count >= 2 {
-            let second = components[1]
-            switch second {
-            case "followers":
-                let userId = components[2]
-                return .profile(.followers(userId: userId), style: .push)
-            default:
-                return .rootTab(.profile)
-            }
-        }
-        return .rootTab(.profile)
-    }
-    
-    private func validateRoute(_ route: NavigationRoute, for url: URL) -> Result<NavigationRoute, DeepLinkError> {
-        var requiredFlag: FeatureFlag?
-        switch route {
-        case .home(let homeRoute, _):
-            requiredFlag = homeRoute.featureFlagKey
-        case .profile(let profileRoute, _):
-            requiredFlag = profileRoute.featureFlagKey
-        case .search(let searchRoute, _):
-            requiredFlag = searchRoute.featureFlagKey
-        case .settings(let settingsRoute, _):
-            requiredFlag = settingsRoute.featureFlagKey
-        default:
-            requiredFlag = nil
+    private func parseUniversalLink(url: URL) -> Result<NavigationRoute, DeepLinkError> {
+        // Universal link format: https://example.com/[tab]/[route]?[params]
+        guard let host = url.host, supportedDomains.contains(host) else {
+            return .success(.weblink(WebRoute(url: url)))
         }
         
-        if let flag = requiredFlag, !featureFlagManager.isEnabled(flag) {
-            if isUniversalLink(url) {
-                /// Feature Flag is off but since this is a link, navigate to web version
-                return .success(.weblink(WebRoute(url: url)))
-            } else {
-                /// Feature Flag is off and not a link to nowhere to navigate
-                return isUniversalLink(url) ? .success(.weblink(WebRoute(url: url))) : .failure(.featureFlagOff(flag: flag))
-            }
+        let pathComponents = url.pathComponents.filter { $0 != "/" }
+        guard !pathComponents.isEmpty else {
+            return .failure(.missingRouteComponents)
         }
         
-        return .success(route)
+        let tab = pathComponents[0]
+        let remainingComponents = Array(pathComponents.dropFirst())
+        
+        switch tab {
+        case "home":
+            return parseHomeDeepLink(pathComponents: remainingComponents, url: url)
+        case "profile":
+            return parseProfileDeepLink(pathComponents: remainingComponents, url: url)
+        case "search":
+            return parseSearchDeepLink(pathComponents: remainingComponents, url: url)
+        case "settings":
+            return parseSettingsDeepLink(pathComponents: remainingComponents, url: url)
+        default:
+            return .success(.weblink(WebRoute(url: url)))
+        }
+    }
+    
+    private func parseHomeDeepLink(pathComponents: [String], url: URL) -> Result<NavigationRoute, DeepLinkError> {
+        guard let firstComponent = pathComponents.first else {
+            return .success(.rootTab(.home))
+        }
+        
+        switch firstComponent {
+        case "detail":
+            if let itemId = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+                .queryItems?.first(where: { $0.name == "itemId" })?.value {
+                return .success(.home(.detail(itemId: itemId), style: .push))
+            }
+        case "category":
+            if let categoryId = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+                .queryItems?.first(where: { $0.name == "categoryId" })?.value {
+                return .success(.home(.category(categoryId: categoryId), style: .push))
+            }
+        case "featured":
+            return validateFeatureFlag(.featuredContent) {
+                .success(.home(.featured, style: .push))
+            }
+        case "new":
+            return .success(.home(.newItem, style: .sheet(detents: [.large])))
+        default:
+            break
+        }
+        
+        return .success(.rootTab(.home))
+    }
+    
+    private func parseProfileDeepLink(pathComponents: [String], url: URL) -> Result<NavigationRoute, DeepLinkError> {
+        guard let firstComponent = pathComponents.first else {
+            return .success(.rootTab(.profile))
+        }
+        
+        switch firstComponent {
+        case "edit":
+            return .success(.profile(.editProfile, style: .sheet(detents: [.large])))
+        case "followers":
+            if let userId = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+                .queryItems?.first(where: { $0.name == "userId" })?.value {
+                return .success(.profile(.followers(userId: userId), style: .push))
+            }
+        case "following":
+            if let userId = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+                .queryItems?.first(where: { $0.name == "userId" })?.value {
+                return .success(.profile(.following(userId: userId), style: .push))
+            }
+        case "achievements":
+            return validateFeatureFlag(.achievements) {
+                .success(.profile(.achievements, style: .push))
+            }
+        case "settings":
+            return .success(.profile(.settings, style: .push))
+        default:
+            break
+        }
+        
+        return .success(.rootTab(.profile))
+    }
+    
+    private func parseSearchDeepLink(pathComponents: [String], url: URL) -> Result<NavigationRoute, DeepLinkError> {
+        guard let firstComponent = pathComponents.first else {
+            return .success(.rootTab(.search))
+        }
+        
+        switch firstComponent {
+        case "results":
+            if let query = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+                .queryItems?.first(where: { $0.name == "q" })?.value {
+                return .success(.search(.results(query: query), style: .push))
+            }
+        case "advanced":
+            return validateFeatureFlag(.advancedSearch) {
+                .success(.search(.advanced, style: .push))
+            }
+        default:
+            break
+        }
+        
+        return .success(.rootTab(.search))
+    }
+    
+    private func parseSettingsDeepLink(pathComponents: [String], url: URL) -> Result<NavigationRoute, DeepLinkError> {
+        guard let firstComponent = pathComponents.first else {
+            return .success(.rootTab(.settings))
+        }
+        
+        switch firstComponent {
+        case "account":
+            return .success(.settings(.account, style: .push))
+        case "privacy":
+            return .success(.settings(.privacy, style: .push))
+        case "notifications":
+            return .success(.settings(.notifications, style: .push))
+        case "appearance":
+            return .success(.settings(.appearance, style: .push))
+        case "premium":
+            return validateFeatureFlag(.premiumFeatures) {
+                .success(.settings(.premium, style: .sheet(detents: [.large])))
+            }
+        case "debug":
+            return validateFeatureFlag(.debugMenu) {
+                .success(.settings(.debug, style: .push))
+            }
+        default:
+            break
+        }
+        
+        return .success(.rootTab(.settings))
+    }
+    
+    private func validateFeatureFlag(_ flag: FeatureFlag, route: () -> Result<NavigationRoute, DeepLinkError>) -> Result<NavigationRoute, DeepLinkError> {
+        if featureFlagManager.isEnabled(flag) {
+            return route()
+        } else {
+            return .failure(.featureFlagOff(flag: flag))
+        }
     }
     
     func isEnabled(_ flag: FeatureFlag) -> Bool {
         featureFlagManager.isEnabled(flag)
     }
 }
-

@@ -12,6 +12,7 @@ import Foundation
 final class HomeViewModel: ViewModel {
     let store: HomeStore
     private(set) var viewState = ViewState()
+    private var stateObservationTask: Task<Void, Never>?
     
     struct ViewState {
         var items: [Item] = []
@@ -21,17 +22,24 @@ final class HomeViewModel: ViewModel {
     
     required init(store: HomeStore) {
         self.store = store
-        Task {
-            await observeState()
-        }
+        startObserving()
     }
     
-    private func observeState() async {
-        for await _ in Timer.publish(every: 0.1, on: .main, in: .common).autoconnect().values {
-            let state = await store.getState()
-            viewState.items = state.items
-            viewState.isLoading = state.isLoading
-            viewState.error = state.error
+//    deinit {
+//        stateObservationTask?.cancel()
+//    }
+    
+    private func startObserving() {
+        stateObservationTask = Task { [weak self] in
+            guard let self else { return }
+            
+            for await state in await store.stateStream {
+                guard !Task.isCancelled else { break }
+                
+                self.viewState.items = state.items
+                self.viewState.isLoading = state.isLoading
+                self.viewState.error = state.error
+            }
         }
     }
     

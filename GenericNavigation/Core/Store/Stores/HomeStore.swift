@@ -10,6 +10,7 @@ import Foundation
 actor HomeStore: Store {
     private var state: HomeState
     private let dependencies: AppDependencies
+    private var continuation: AsyncStream<HomeState>.Continuation?
     
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
@@ -31,6 +32,13 @@ actor HomeStore: Store {
         case deleteItem(String)
     }
     
+    var stateStream: AsyncStream<HomeState> {
+        AsyncStream { continuation in
+            self.continuation = continuation
+            continuation.yield(state)
+        }
+    }
+    
     func getState() -> HomeState {
         state
     }
@@ -40,6 +48,7 @@ actor HomeStore: Store {
         case .loadItems:
             state.isLoading = true
             state.error = nil
+            continuation?.yield(state)
             
             do {
                 // Simulate async loading
@@ -56,17 +65,21 @@ actor HomeStore: Store {
         case .itemsLoaded(let items):
             state.items = items
             state.isLoading = false
+            continuation?.yield(state)
             
         case .loadFailed(let error):
             state.error = error
             state.isLoading = false
+            continuation?.yield(state)
             
         case .selectCategory(let category):
             state.selectedCategory = category
+            continuation?.yield(state)
             await dispatch(.loadItems)
             
         case .deleteItem(let itemId):
             state.items.removeAll { $0.id == itemId }
+            continuation?.yield(state)
         }
     }
 }

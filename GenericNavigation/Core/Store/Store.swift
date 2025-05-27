@@ -13,4 +13,5 @@ protocol Store: Sendable {
     
     func getState() async -> State
     func dispatch(_ action: Action) async
+    var stateStream: AsyncStream<State> { get async }
 }
