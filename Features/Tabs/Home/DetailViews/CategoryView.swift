@@ -10,8 +10,8 @@ import SwiftUI
 struct CategoryView: View {
     @State private var viewModel: CategoryViewModel
     
-    init(viewModel: CategoryViewModel) {
-        self.viewModel = viewModel
+    init(categoryId: String, navigationManager: NavigationManager, userService: UserService) {
+        self._viewModel = State(initialValue: CategoryViewModel(categoryId: categoryId, navigationManager: navigationManager, userService: userService))
     }
     
     var body: some View {

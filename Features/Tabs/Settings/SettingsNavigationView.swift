@@ -16,7 +16,7 @@ struct SettingsNavigationView: View {
             tab: .settings,
             router: appRouter.settingsRouter,
             content: {
-                let viewModel = SettingsViewModel(navigationCoordinator: appRouter, featureFlagService: featureFlagService)
+                let viewModel = SettingsViewModel(navigationManager: appRouter, featureFlagService: featureFlagService)
                 SettingsView(viewModel: viewModel)
             },
             destinationBuilder: { route in

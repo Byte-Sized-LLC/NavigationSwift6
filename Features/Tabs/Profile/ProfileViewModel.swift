@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 @Observable
 final class ProfileViewModel: ViewModel {
-    private let navigationCoordinator: NavigationManager
+    private let navigationManager: NavigationManager
     
     let store: ProfileStore
     private(set) var viewState = ViewState()
@@ -23,9 +23,9 @@ final class ProfileViewModel: ViewModel {
         var hasUnsavedChanges = false
     }
     
-    required init(store: ProfileStore, navigationCoordinator: NavigationManager) {
+    required init(store: ProfileStore, navigationManager: NavigationManager) {
         self.store = store
-        self.navigationCoordinator = navigationCoordinator
+        self.navigationManager = navigationManager
         startObserving()
     }
     
@@ -61,6 +61,6 @@ final class ProfileViewModel: ViewModel {
     }
     
     func navigate(to route: ProfileRoute, style: NavigationStyle) {
-        navigationCoordinator.navigate(to: route, style: style)
+        navigationManager.navigate(to: route, style: style)
     }
 }

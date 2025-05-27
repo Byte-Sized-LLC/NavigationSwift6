@@ -12,8 +12,7 @@ struct HomeNavigationView: View {
     @Environment(AppDependencies.self) private var dependencies
     @State private var viewModel: HomeViewModel
     
-    init() {
-        let dependencies = AppDependencies()
+    init(dependencies: AppDependencies) {
         let store = HomeStore(dependencies: dependencies)
         _viewModel = State(initialValue: HomeViewModel(store: store))
     }
@@ -42,11 +41,7 @@ struct HomeNavigationView: View {
         case .detail(let itemId):
             DetailView(itemId: itemId)
         case .category(let categoryId):
-            CategoryView(viewModel: CategoryViewModel(
-                categoryId: categoryId,
-                navigationCoordinator: appRouter,
-                userService: dependencies.userService
-            ))
+            CategoryView(categoryId: categoryId, navigationManager: appRouter, userService: dependencies.userService)
         case .featured:
             FeaturedView()
         case .newItem:

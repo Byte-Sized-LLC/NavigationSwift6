@@ -4,15 +4,15 @@ import SwiftUI
 @MainActor
 @Observable
 final class CategoryViewModel {
-    let navigationCoordinator: NavigationManager
+    let navigationManager: NavigationManager
     private let userService: UserService
 
     var categoryId: String
     var fetchedUser: User?
     
-    init(categoryId: String, navigationCoordinator: NavigationManager, userService: UserService) {
+    init(categoryId: String, navigationManager: NavigationManager, userService: UserService) {
         self.categoryId = categoryId
-        self.navigationCoordinator = navigationCoordinator
+        self.navigationManager = navigationManager
         self.userService = userService
     }
     
@@ -23,14 +23,14 @@ final class CategoryViewModel {
     }
     
     func navigateToSettings() {
-        navigationCoordinator.navigate(to: .settings)
+        navigationManager.navigate(to: .settings)
     }
     
     func navigateToFeatured() {
-        navigationCoordinator.navigate(to: HomeRoute.featured, style: .push)
+        navigationManager.navigate(to: HomeRoute.featured, style: .push)
     }
     
     func navigateToAccountSettings() {
-        navigationCoordinator.navigate(to: SettingsRoute.account, style: .push)
+        navigationManager.navigate(to: SettingsRoute.account, style: .push)
     }
 } 

@@ -15,7 +15,7 @@ struct MainTabView: View {
         @Bindable var router = appRouter
         
         TabView(selection: $router.selectedTab) {
-            HomeNavigationView()
+            HomeNavigationView(dependencies: dependencies)
             ProfileNavigationView()
             SearchNavigationView()
             SettingsNavigationView()

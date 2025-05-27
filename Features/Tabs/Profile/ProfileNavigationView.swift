@@ -17,7 +17,7 @@ struct ProfileNavigationView: View {
             router: appRouter.profileRouter,
             content: {
                 let store = ProfileStore(dependencies: dependencies)
-                let viewModel = ProfileViewModel(store: store, navigationCoordinator: appRouter)
+                let viewModel = ProfileViewModel(store: store, navigationManager: appRouter)
                 ProfileView(viewModel: viewModel, userId: "current")
             },
             destinationBuilder: { route in
