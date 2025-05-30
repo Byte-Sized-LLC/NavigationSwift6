@@ -16,6 +16,7 @@ struct GenericNavigationApp: App {
     @State private var deepLinkHandler = DeepLinkManager()
     @State private var featureFlags = FeatureFlagService()
     @State private var dependencies = AppDependencies()
+    @State private var onboardingStateManager = OnboardingStateManager()
     @AppStorage("environment") private var environment: AppEnvironment = .production
     
     var body: some Scene {
@@ -25,6 +26,7 @@ struct GenericNavigationApp: App {
                 .environment(deepLinkHandler)
                 .environment(featureFlags)
                 .environment(dependencies)
+                .environment(onboardingStateManager)
                 .environment(\.appEnvironment, environment)
                 .onOpenURL { url in
                     appRouter.handleDeepLink(url: url)

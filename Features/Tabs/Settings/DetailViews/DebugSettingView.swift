@@ -10,6 +10,7 @@ import SwiftUI
 struct DebugSettingsView: View {
     @Environment(FeatureFlagService.self) private var featureFlags
     @Environment(AppRouter.self) private var appRouter
+    @Environment(OnboardingStateManager.self) private var onboardingStateManager
     @AppStorage("environment") private var environment: AppEnvironment = .production
     @Environment(\.dismiss) var dismiss
     
@@ -49,6 +50,12 @@ struct DebugSettingsView: View {
                 }
                 
                 Section("Debug Actions") {
+                    Button("Reset Onboarding") {
+                        onboardingStateManager.resetOnboarding()
+                        dismiss()
+                    }
+                    .foregroundColor(.orange)
+                    
                     Button("Trigger Test Crash") {
                         fatalError("Test crash")
                     }
@@ -56,6 +63,9 @@ struct DebugSettingsView: View {
                     
                     Button("Clear All Data") {
                         // Clear implementation
+                        onboardingStateManager.resetOnboarding()
+                        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+                        dismiss()
                     }
                     .foregroundColor(.red)
                 }

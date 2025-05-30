@@ -10,38 +10,38 @@ import SwiftUI
 struct OnboardingFlow: View {
     @Environment(OnboardingRouter.self) private var router
     @Environment(AppDependencies.self) private var dependencies
-    @State private var stateManager = OnboardingStateManager()
-    @State private var isAuthenticated: Bool = false
+    @Environment(OnboardingStateManager.self) private var stateManager
     
     var body: some View {
         OnboardingNavigationWrapper(
             router: router,
             content: {
-                OnboardingAuthenticationView(
-                    onboardingRouter: router,
-                    dependencies: dependencies
-                )
+                // If authenticated, go directly to checklist
+                if stateManager.userIsAuthenticated {
+                    OnboardingChecklistView()
+                } else {
+                    OnboardingAuthenticationView()
+                }
             },
             destinationBuilder: { route in
                 destinationView(for: route)
             }
         )
-        .environment(\.onboardingStateManager, stateManager)
+        .onAppear {
+            // If user is authenticated but hasn't navigated to checklist yet
+            if stateManager.userIsAuthenticated && router.navigationPath.isEmpty {
+                router.navigate(to: .checklist, style: .push)
+            }
+        }
     }
     
     @ViewBuilder
     private func destinationView(for route: OnboardingRoute) -> some View {
         switch route {
         case .authentication:
-            OnboardingAuthenticationView(
-                onboardingRouter: router,
-                dependencies: dependencies
-            )
+            OnboardingAuthenticationView()
         case .checklist:
-            OnboardingChecklistView(
-                onboardingRouter: router,
-                dependencies: dependencies
-            )
+            OnboardingChecklistView()
         case .step(let step):
             switch step {
             case .welcome:

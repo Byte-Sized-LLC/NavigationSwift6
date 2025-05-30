@@ -8,18 +8,22 @@
 import SwiftUI
 
 struct OnboardingAuthenticationView: View {
-    @State private var viewModel: OnboardingAuthenticationViewModel
+    @Environment(OnboardingRouter.self) private var onboardingRouter
+    @Environment(AppDependencies.self) private var dependencies
+    @Environment(\.onboardingStateManager) private var stateManager
+    
+    @State private var username = ""
+    @State private var password = ""
+    @State private var isLoading = false
+    @State private var errorMessage: String?
     @FocusState private var focusedField: Field?
     
     enum Field {
         case username, password
     }
     
-    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
-        self._viewModel = State(initialValue: OnboardingAuthenticationViewModel(
-            onboardingRouter: onboardingRouter,
-            dependencies: dependencies
-        ))
+    private var canAuthenticate: Bool {
+        !username.isEmpty && !password.isEmpty
     }
     
     var body: some View {
@@ -45,7 +49,7 @@ struct OnboardingAuthenticationView: View {
             
             // Form
             VStack(spacing: 16) {
-                TextField("Username", text: $viewModel.username)
+                TextField("Username", text: $username)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
@@ -55,15 +59,15 @@ struct OnboardingAuthenticationView: View {
                         focusedField = .password
                     }
                 
-                SecureField("Password", text: $viewModel.password)
+                SecureField("Password", text: $password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .focused($focusedField, equals: .password)
                     .submitLabel(.go)
                     .onSubmit {
-                        viewModel.authenticate()
+                        authenticate()
                     }
                 
-                if let error = viewModel.errorMessage {
+                if let error = errorMessage {
                     Text(error)
                         .font(.caption)
                         .foregroundColor(.red)
@@ -73,9 +77,9 @@ struct OnboardingAuthenticationView: View {
             .padding(.horizontal, 40)
             
             // Sign In Button
-            Button(action: { viewModel.authenticate() }) {
+            Button(action: authenticate) {
                 Group {
-                    if viewModel.isLoading {
+                    if isLoading {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle(tint: .white))
                     } else {
@@ -84,11 +88,11 @@ struct OnboardingAuthenticationView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(viewModel.canAuthenticate ? Color.blue : Color.gray)
+                .background(canAuthenticate ? Color.blue : Color.gray)
                 .foregroundColor(.white)
                 .cornerRadius(10)
             }
-            .disabled(!viewModel.canAuthenticate || viewModel.isLoading)
+            .disabled(!canAuthenticate || isLoading)
             .padding(.horizontal, 40)
             
             // Demo credentials hint
@@ -106,7 +110,7 @@ struct OnboardingAuthenticationView: View {
             // Skip for testing
 #if DEBUG
             Button("Skip (Debug)") {
-                viewModel.skipAuthentication()
+                skipAuthentication()
             }
             .font(.caption)
             .foregroundColor(.secondary)
@@ -118,5 +122,42 @@ struct OnboardingAuthenticationView: View {
         .onAppear {
             focusedField = .username
         }
+    }
+    
+    private func authenticate() {
+        guard canAuthenticate else { return }
+        
+        Task {
+            isLoading = true
+            errorMessage = nil
+            
+            do {
+                // Simulate authentication
+                try await Task.sleep(nanoseconds: 1_500_000_000)
+                
+                // Demo credentials check
+                if username.lowercased() == "demo" && password == "demo" {
+                    await dependencies.analyticsService.track(.custom("onboarding_authenticated", parameters: nil))
+                    
+                    // Mark user as authenticated
+                    stateManager.userIsAuthenticated = true
+                    
+                    // Navigate to checklist
+                    onboardingRouter.navigate(to: .checklist, style: .push)
+                } else {
+                    throw AuthenticationError.invalidCredentials
+                }
+            } catch {
+                errorMessage = "Invalid username or password"
+                await dependencies.analyticsService.track(.custom("onboarding_auth_failed", parameters: nil))
+            }
+            
+            isLoading = false
+        }
+    }
+    
+    private func skipAuthentication() {
+        stateManager.userIsAuthenticated = true
+        onboardingRouter.navigate(to: .checklist, style: .push)
     }
 }

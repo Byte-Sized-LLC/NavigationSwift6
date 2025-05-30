@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  RootView.swift
 //  GenericNavigation
 //
 //  Created by Dylan Anderson on 5/23/25.
@@ -11,12 +11,12 @@ struct RootView: View {
     @Environment(AppRouter.self) private var appRouter
     @Environment(AppDependencies.self) private var dependencies
     @Environment(FeatureFlagService.self) private var featureFlags
+    @Environment(OnboardingStateManager.self) private var onboardingStateManager
     @State private var showDebugMenu = false
-    @AppStorage("isOnboardingComplete") private var isOnboardingComplete: Bool = false
     
     var body: some View {
         Group {
-            if isOnboardingComplete {
+            if onboardingStateManager.isOnboardingComplete {
                 MainTabView()
             } else {
                 OnboardingFlow()
@@ -45,3 +45,10 @@ struct RootView: View {
     }
 }
 
+#Preview {
+    RootView()
+        .environment(AppRouter())
+        .environment(AppDependencies())
+        .environment(FeatureFlagService())
+        .environment(OnboardingStateManager())
+}

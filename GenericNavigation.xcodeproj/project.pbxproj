@@ -72,7 +72,6 @@
 				Onboarding/OnboardingStateManager.swift,
 				Onboarding/OnboardingStep.swift,
 				Onboarding/OnboardingStepView.swift,
-				Onboarding/OnboardingViewModel.swift,
 				Onboarding/Steps/Permissions/OnboardingPermissionsView.swift,
 				Onboarding/Steps/Permissions/OnboardingPermissionsViewModel.swift,
 				Onboarding/Steps/Preferences/OnboardingPreferencesView.swift,

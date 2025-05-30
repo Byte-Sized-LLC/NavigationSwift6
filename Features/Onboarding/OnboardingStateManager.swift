@@ -26,15 +26,23 @@ final class OnboardingStateManager: @unchecked Sendable {
     @AppStorage("completedOnboardingSteps") private var completedStepsData = Data()
     
     @ObservationIgnored
-    @AppStorage("isOnboardingComplete") private var isOnboardingComplete: Bool = false
+    @AppStorage("isOnboardingComplete") private var isOnboardingCompleteStorage: Bool = false
     
     @ObservationIgnored
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
+    
+    @ObservationIgnored
+    @AppStorage("isAuthenticated") private var isAuthenticated: Bool = false
     
     private(set) var completedSteps: Set<OnboardingStep> = []
     
     init() {
         loadCompletedSteps()
+    }
+    
+    var isOnboardingComplete: Bool {
+        get { isOnboardingCompleteStorage }
+        set { isOnboardingCompleteStorage = newValue }
     }
     
     var progress: Double {
@@ -51,6 +59,11 @@ final class OnboardingStateManager: @unchecked Sendable {
         OnboardingStep.allCases.allSatisfy { completedSteps.contains($0) }
     }
     
+    var userIsAuthenticated: Bool {
+        get { isAuthenticated }
+        set { isAuthenticated = newValue }
+    }
+    
     func isStepCompleted(_ step: OnboardingStep) -> Bool {
         completedSteps.contains(step)
     }
@@ -61,14 +74,15 @@ final class OnboardingStateManager: @unchecked Sendable {
     }
     
     func completeOnboarding() {
-        isOnboardingComplete = true
+        isOnboardingCompleteStorage = true
         hasSeenOnboarding = true
     }
     
     func resetOnboarding() {
         completedSteps.removeAll()
-        isOnboardingComplete = false
+        isOnboardingCompleteStorage = false
         hasSeenOnboarding = false
+        isAuthenticated = false
         saveCompletedSteps()
     }
     

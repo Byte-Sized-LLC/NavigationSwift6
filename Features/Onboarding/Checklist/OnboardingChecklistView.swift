@@ -8,17 +8,12 @@
 import SwiftUI
 
 struct OnboardingChecklistView: View {
-    @State private var viewModel: OnboardingChecklistViewModel
-    @State private var showCompletionAlert = false
-    @Environment(AppRouter.self) private var appRouter
+    @Environment(OnboardingRouter.self) private var onboardingRouter
+    @Environment(AppDependencies.self) private var dependencies
     @Environment(\.onboardingStateManager) private var stateManager
+    @Environment(AppRouter.self) private var appRouter
     
-    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
-        self._viewModel = State(initialValue: OnboardingChecklistViewModel(
-            onboardingRouter: onboardingRouter,
-            dependencies: dependencies
-        ))
-    }
+    @State private var showCompletionAlert = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -53,7 +48,7 @@ struct OnboardingChecklistView: View {
                                 step: step,
                                 isCompleted: stateManager.isStepCompleted(step),
                                 action: {
-                                    viewModel.navigateToStep(step)
+                                    navigateToStep(step)
                                 }
                             )
                         }
@@ -78,13 +73,34 @@ struct OnboardingChecklistView: View {
         .alert("Complete Setup?", isPresented: $showCompletionAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Complete") {
-                viewModel.completeOnboarding()
+                completeOnboarding()
             }
         } message: {
             Text("You've completed all required steps. You can always access optional settings later.")
         }
         .onAppear {
-            viewModel.checkProgress()
+            checkProgress()
+        }
+    }
+    
+    private func checkProgress() {
+        // This triggers a UI update based on the current state
+        _ = stateManager.progress
+    }
+    
+    private func navigateToStep(_ step: OnboardingStep) {
+        onboardingRouter.navigate(to: OnboardingRoute.step(step), style: .push)
+    }
+    
+    private func completeOnboarding() {
+        // Mark onboarding as complete
+        stateManager.completeOnboarding()
+        
+        Task {
+            await dependencies.analyticsService.track(.custom("onboarding_completed", parameters: [
+                "completed_steps": String(stateManager.completedSteps.count),
+                "total_steps": String(OnboardingStep.allCases.count)
+            ]))
         }
     }
 }
