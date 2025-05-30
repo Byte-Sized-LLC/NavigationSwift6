@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 @Observable
 final class OnboardingPermissionsViewModel {
-    private let navigationManager: NavigationManager
+    private let onboardingRouter: OnboardingRouter
     private let dependencies: AppDependencies
     
     var notificationsGranted = false
@@ -18,8 +18,8 @@ final class OnboardingPermissionsViewModel {
     var locationGranted = false
     var hasRequestedPermissions = false
     
-    init(navigationManager: NavigationManager, dependencies: AppDependencies) {
-        self.navigationManager = navigationManager
+    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
+        self.onboardingRouter = onboardingRouter
         self.dependencies = dependencies
     }
     
@@ -58,11 +58,6 @@ final class OnboardingPermissionsViewModel {
     }
     
     private func completeStep() {
-        if let router = navigationManager as? OnboardingRouter {
-            if let checklistVM = router.checklistViewModel {
-                checklistVM.markStepCompleted(.permissions)
-            }
-            router.popLast()
-        }
+        onboardingRouter.popLast()
     }
 }

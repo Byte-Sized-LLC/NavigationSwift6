@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 @Observable
 final class OnboardingPreferencesViewModel {
-    private let navigationManager: NavigationManager
+    private let onboardingRouter: OnboardingRouter
     private let dependencies: AppDependencies
     
     var dailyDigest = true
@@ -20,8 +20,8 @@ final class OnboardingPreferencesViewModel {
     
     let languages = ["English", "Spanish", "French"]
     
-    init(navigationManager: NavigationManager, dependencies: AppDependencies) {
-        self.navigationManager = navigationManager
+    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
+        self.onboardingRouter = onboardingRouter
         self.dependencies = dependencies
     }
     
@@ -45,11 +45,6 @@ final class OnboardingPreferencesViewModel {
     }
     
     private func completeStep() {
-        if let router = navigationManager as? OnboardingRouter {
-            if let checklistVM = router.checklistViewModel {
-                checklistVM.markStepCompleted(.preferences)
-            }
-            router.popLast()
-        }
+        onboardingRouter.popLast()
     }
 }

@@ -10,9 +10,9 @@ import SwiftUI
 struct OnboardingPreferencesView: View {
     @State private var viewModel: OnboardingPreferencesViewModel
     
-    init(navigationManager: NavigationManager, dependencies: AppDependencies) {
+    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
         self._viewModel = State(initialValue: OnboardingPreferencesViewModel(
-            navigationManager: navigationManager,
+            onboardingRouter: onboardingRouter,
             dependencies: dependencies
         ))
     }

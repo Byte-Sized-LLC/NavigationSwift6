@@ -12,15 +12,13 @@ enum OnboardingStep: String, CaseIterable, Sendable {
     case permissions
     case profile
     case preferences
-    case completion
     
     var next: OnboardingStep? {
         switch self {
         case .welcome: return .permissions
         case .permissions: return .profile
         case .profile: return .preferences
-        case .preferences: return .completion
-        case .completion: return nil
+        case .preferences: return nil
         }
     }
     
@@ -28,7 +26,7 @@ enum OnboardingStep: String, CaseIterable, Sendable {
         switch self {
         case .permissions, .profile:
             return true
-        case .preferences, .completion:
+        case .preferences:
             return false
         default:
             return false
@@ -45,7 +43,6 @@ enum OnboardingStep: String, CaseIterable, Sendable {
         case .permissions: return "bell.fill"
         case .profile: return "person.crop.circle.fill"
         case .preferences: return "slider.horizontal.3"
-        case .completion: return "checkmark.circle.fill"
         }
     }
     
@@ -55,7 +52,6 @@ enum OnboardingStep: String, CaseIterable, Sendable {
         case .permissions: return "Stay Updated"
         case .profile: return "Create Profile"
         case .preferences: return "Set Preferences"
-        case .completion: return "All Set!"
         }
     }
     
@@ -65,13 +61,11 @@ enum OnboardingStep: String, CaseIterable, Sendable {
         case .permissions: return "Enable notifications to stay in the loop"
         case .profile: return "Tell us a bit about yourself"
         case .preferences: return "Customize your experience"
-        case .completion: return "You're ready to explore"
         }
     }
     
     var buttonTitle: String {
         switch self {
-        case .completion: return "Finish Tour"
         case .permissions: return "Continue"
         case .profile: return "Save Profile"
         case .preferences: return "Save Preferences"

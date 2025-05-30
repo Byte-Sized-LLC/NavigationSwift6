@@ -12,9 +12,9 @@ struct OnboardingChecklistView: View {
     @State private var showCompletionAlert = false
     @Environment(AppRouter.self) private var appRouter
     
-    init(navigationManager: NavigationManager, dependencies: AppDependencies) {
+    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
         self._viewModel = State(initialValue: OnboardingChecklistViewModel(
-            navigationManager: navigationManager,
+            onboardingRouter: onboardingRouter,
             dependencies: dependencies
         ))
     }
@@ -139,10 +139,6 @@ struct ChecklistItemView: View {
                                 .cornerRadius(4)
                         }
                     }
-                    
-                    Text(step.description)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 }
                 
                 Spacer()

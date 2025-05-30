@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 @Observable
 final class OnboardingAuthenticationViewModel {
-    private let navigationManager: NavigationManager
+    private let onboardingRouter: OnboardingRouter
     private let dependencies: AppDependencies
     
     var username = ""
@@ -22,8 +22,8 @@ final class OnboardingAuthenticationViewModel {
         !username.isEmpty && !password.isEmpty
     }
     
-    init(navigationManager: NavigationManager, dependencies: AppDependencies) {
-        self.navigationManager = navigationManager
+    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
+        self.onboardingRouter = onboardingRouter
         self.dependencies = dependencies
     }
     
@@ -59,7 +59,7 @@ final class OnboardingAuthenticationViewModel {
     }
     
     private func navigateToChecklist() {
-        navigationManager.navigate(to: OnboardingRoute.step(.welcome), style: .push)
+        onboardingRouter.navigate(to: .checklist, style: .push)
     }
 }
 

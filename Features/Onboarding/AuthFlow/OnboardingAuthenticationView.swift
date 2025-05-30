@@ -15,9 +15,9 @@ struct OnboardingAuthenticationView: View {
         case username, password
     }
     
-    init(navigationManager: NavigationManager, dependencies: AppDependencies) {
+    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
         self._viewModel = State(initialValue: OnboardingAuthenticationViewModel(
-            navigationManager: navigationManager,
+            onboardingRouter: onboardingRouter,
             dependencies: dependencies
         ))
     }

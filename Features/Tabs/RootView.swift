@@ -12,13 +12,15 @@ struct RootView: View {
     @Environment(AppDependencies.self) private var dependencies
     @Environment(FeatureFlagService.self) private var featureFlags
     @State private var showDebugMenu = false
+    @AppStorage("isOnboardingComplete") private var isOnboardingComplete: Bool = false
     
     var body: some View {
         Group {
-            if appRouter.isOnboardingComplete {
+            if isOnboardingComplete {
                 MainTabView()
             } else {
                 OnboardingFlow()
+                    .environment(appRouter.onboardingRouter)
             }
         }
         .overlay(alignment: .topTrailing) {

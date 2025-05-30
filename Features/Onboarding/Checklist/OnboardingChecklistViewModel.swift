@@ -11,7 +11,7 @@ import SwiftUI
 @MainActor
 @Observable
 final class OnboardingChecklistViewModel {
-    private let navigationManager: NavigationManager
+    private let onboardingRouter: OnboardingRouter
     private let dependencies: AppDependencies
     
     @ObservationIgnored
@@ -33,8 +33,8 @@ final class OnboardingChecklistViewModel {
         canShowOptionalSteps
     }
     
-    init(navigationManager: NavigationManager, dependencies: AppDependencies) {
-        self.navigationManager = navigationManager
+    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
+        self.onboardingRouter = onboardingRouter
         self.dependencies = dependencies
         loadCompletedSteps()
     }
@@ -48,9 +48,7 @@ final class OnboardingChecklistViewModel {
     }
     
     func navigateToStep(_ step: OnboardingStep) {
-        if let router = navigationManager as? OnboardingRouter {
-            router.navigate(to: .step(step), style: .push)
-        }
+        onboardingRouter.navigate(to: OnboardingRoute.step(step), style: .push)
     }
     
     func markStepCompleted(_ step: OnboardingStep) {
@@ -63,12 +61,7 @@ final class OnboardingChecklistViewModel {
     }
     
     func completeOnboarding() {
-        if let appRouter = navigationManager as? AppRouter {
-            Task {
-                await dependencies.analyticsService.track(.custom("onboarding_completed", parameters: nil))
-                appRouter.completeOnboarding()
-            }
-        }
+        print("find a way to navigate to tab root stack and navigate there on approuter")
     }
     
     private func loadCompletedSteps() {

@@ -14,9 +14,10 @@ final class AppRouter: @unchecked Sendable {
     private(set) var profileRouter = ProfileRouter()
     private(set) var searchRouter = SearchRouter()
     private(set) var settingsRouter = SettingsRouter()
-    
+    private(set) var onboardingRouter = OnboardingRouter()
+
     var selectedTab: RootTab = .home
-    
+
     private let deepLinkManager: DeepLinkManager
     private let featureFlagManager: FeatureFlagService
 

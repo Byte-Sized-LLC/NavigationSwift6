@@ -11,6 +11,7 @@ enum OnboardingRoute: AppRoute {
     var id: Self { self }
     
     case authentication
+    case checklist
     case step(OnboardingStep)
     
     var featureFlagKey: FeatureFlag? {

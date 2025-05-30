@@ -48,18 +48,6 @@ struct DebugSettingsView: View {
                     .foregroundColor(.red)
                 }
                 
-                Section("App State") {
-                    Button("Reset Onboarding") {
-                        Task { @MainActor in
-                            appRouter.resetOnboarding()
-                            dismiss()
-                        }
-                    }
-                    
-                    Text("Last Onboarding Step: \(appRouter.currentOnboardingStep.rawValue)")
-                        .font(.caption)
-                }
-                
                 Section("Debug Actions") {
                     Button("Trigger Test Crash") {
                         fatalError("Test crash")

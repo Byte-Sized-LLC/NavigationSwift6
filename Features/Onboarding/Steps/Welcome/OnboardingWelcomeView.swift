@@ -10,9 +10,9 @@ import SwiftUI
 struct OnboardingWelcomeView: View {
     @State private var viewModel: OnboardingWelcomeViewModel
     
-    init(navigationManager: NavigationManager, dependencies: AppDependencies) {
+    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
         self._viewModel = State(initialValue: OnboardingWelcomeViewModel(
-            navigationManager: navigationManager,
+            onboardingRouter: onboardingRouter,
             dependencies: dependencies
         ))
     }

@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 @Observable
 final class OnboardingProfileViewModel {
-    private let navigationManager: NavigationManager
+    private let onboardingRouter: OnboardingRouter
     private let dependencies: AppDependencies
     
     var name = ""
@@ -21,8 +21,8 @@ final class OnboardingProfileViewModel {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
-    init(navigationManager: NavigationManager, dependencies: AppDependencies) {
-        self.navigationManager = navigationManager
+    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
+        self.onboardingRouter = onboardingRouter
         self.dependencies = dependencies
     }
     
@@ -53,6 +53,6 @@ final class OnboardingProfileViewModel {
     }
     
     private func completeStep() {
-
+        onboardingRouter.popLast()
     }
 }
