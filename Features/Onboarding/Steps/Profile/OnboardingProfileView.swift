@@ -10,7 +10,7 @@ import SwiftUI
 struct OnboardingProfileView: View {
     @State private var viewModel: OnboardingProfileViewModel
     @FocusState private var isNameFocused: Bool
-    @Environment(\.onboardingStateManager) private var stateManager
+    @Environment(OnboardingStateManager.self) private var stateManager
     
     init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
         self._viewModel = State(initialValue: OnboardingProfileViewModel(

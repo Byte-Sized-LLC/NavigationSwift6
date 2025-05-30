@@ -10,7 +10,7 @@ import SwiftUI
 struct OnboardingAuthenticationView: View {
     @Environment(OnboardingRouter.self) private var onboardingRouter
     @Environment(AppDependencies.self) private var dependencies
-    @Environment(\.onboardingStateManager) private var stateManager
+    @Environment(OnboardingStateManager.self) private var stateManager
     
     @State private var username = ""
     @State private var password = ""

@@ -10,7 +10,7 @@ import SwiftUI
 struct OnboardingChecklistView: View {
     @Environment(OnboardingRouter.self) private var onboardingRouter
     @Environment(AppDependencies.self) private var dependencies
-    @Environment(\.onboardingStateManager) private var stateManager
+    @Environment(OnboardingStateManager.self) private var stateManager
     @Environment(AppRouter.self) private var appRouter
     
     @State private var showCompletionAlert = false

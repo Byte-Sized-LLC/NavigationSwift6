@@ -8,18 +8,6 @@
 import Foundation
 import SwiftUI
 
-// Environment key for OnboardingStateManager
-private struct OnboardingStateManagerKey: EnvironmentKey {
-    static let defaultValue = OnboardingStateManager()
-}
-
-extension EnvironmentValues {
-    var onboardingStateManager: OnboardingStateManager {
-        get { self[OnboardingStateManagerKey.self] }
-        set { self[OnboardingStateManagerKey.self] = newValue }
-    }
-}
-
 @Observable
 final class OnboardingStateManager: @unchecked Sendable {
     @ObservationIgnored
