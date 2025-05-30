@@ -23,9 +23,9 @@ final class OnboardingPermissionsViewModel {
         self.dependencies = dependencies
     }
     
-    func requestPermissions() {
+    func requestPermissions(stateManager: OnboardingStateManager) {
         if hasRequestedPermissions {
-            completeStep()
+            completeStep(stateManager: stateManager)
             return
         }
         
@@ -50,14 +50,16 @@ final class OnboardingPermissionsViewModel {
         }
     }
     
-    func skipPermissions() {
+    func skipPermissions(stateManager: OnboardingStateManager) {
         Task {
             await dependencies.analyticsService.track(.custom("onboarding_permissions_skipped", parameters: nil))
-            completeStep()
+            completeStep(stateManager: stateManager)
         }
     }
     
-    private func completeStep() {
+    private func completeStep(stateManager: OnboardingStateManager) {
+        // Mark step as completed using the state manager
+        stateManager.markStepCompleted(.permissions)
         onboardingRouter.popLast()
     }
 }

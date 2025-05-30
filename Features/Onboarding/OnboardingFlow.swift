@@ -1,4 +1,3 @@
-// OnboardingFlow.swift
 //
 //  OnboardingFlow.swift
 //  GenericNavigation
@@ -11,6 +10,7 @@ import SwiftUI
 struct OnboardingFlow: View {
     @Environment(OnboardingRouter.self) private var router
     @Environment(AppDependencies.self) private var dependencies
+    @State private var stateManager = OnboardingStateManager()
     @State private var isAuthenticated: Bool = false
     
     var body: some View {
@@ -26,6 +26,7 @@ struct OnboardingFlow: View {
                 destinationView(for: route)
             }
         )
+        .environment(\.onboardingStateManager, stateManager)
     }
     
     @ViewBuilder

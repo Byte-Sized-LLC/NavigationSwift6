@@ -10,6 +10,7 @@ import SwiftUI
 struct OnboardingProfileView: View {
     @State private var viewModel: OnboardingProfileViewModel
     @FocusState private var isNameFocused: Bool
+    @Environment(\.onboardingStateManager) private var stateManager
     
     init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
         self._viewModel = State(initialValue: OnboardingProfileViewModel(
@@ -79,7 +80,7 @@ struct OnboardingProfileView: View {
             
             Spacer()
             
-            Button(action: { viewModel.saveProfile() }) {
+            Button(action: { viewModel.saveProfile(stateManager: stateManager) }) {
                 Text("Continue")
                     .frame(maxWidth: .infinity)
                     .padding()

@@ -31,7 +31,7 @@ final class OnboardingProfileViewModel {
         hasPhoto = true
     }
     
-    func saveProfile() {
+    func saveProfile(stateManager: OnboardingStateManager) {
         guard canSave else { return }
         
         Task {
@@ -48,11 +48,13 @@ final class OnboardingProfileViewModel {
                 "has_photo": hasPhoto ? "true" : "false"
             ]))
             
-            completeStep()
+            completeStep(stateManager: stateManager)
         }
     }
     
-    private func completeStep() {
+    private func completeStep(stateManager: OnboardingStateManager) {
+        // Mark step as completed using the state manager
+        stateManager.markStepCompleted(.profile)
         onboardingRouter.popLast()
     }
 }

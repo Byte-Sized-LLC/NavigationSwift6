@@ -24,9 +24,10 @@ final class OnboardingWelcomeViewModel {
         waveAnimation = true
     }
     
-    func completeStep() {
+    func completeStep(stateManager: OnboardingStateManager) {
         Task {
             await dependencies.analyticsService.track(.custom("onboarding_welcome_completed", parameters: nil))
+            stateManager.markStepCompleted(.welcome)
             onboardingRouter.popLast()
         }
     }

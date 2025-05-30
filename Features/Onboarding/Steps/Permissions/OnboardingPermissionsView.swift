@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OnboardingPermissionsView: View {
     @State private var viewModel: OnboardingPermissionsViewModel
+    @Environment(\.onboardingStateManager) private var stateManager
     
     init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
         self._viewModel = State(initialValue: OnboardingPermissionsViewModel(
@@ -65,7 +66,7 @@ struct OnboardingPermissionsView: View {
             Spacer()
             
             VStack(spacing: 12) {
-                Button(action: { viewModel.requestPermissions() }) {
+                Button(action: { viewModel.requestPermissions(stateManager: stateManager) }) {
                     Text(viewModel.hasRequestedPermissions ? "Continue" : "Grant Permissions")
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -76,7 +77,7 @@ struct OnboardingPermissionsView: View {
                 
                 if !viewModel.hasRequestedPermissions {
                     Button("Skip for Now") {
-                        viewModel.skipPermissions()
+                        viewModel.skipPermissions(stateManager: stateManager)
                     }
                     .font(.footnote)
                     .foregroundColor(.secondary)

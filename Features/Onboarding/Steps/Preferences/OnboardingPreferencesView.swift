@@ -9,7 +9,8 @@ import SwiftUI
 
 struct OnboardingPreferencesView: View {
     @State private var viewModel: OnboardingPreferencesViewModel
-    
+    @Environment(\.onboardingStateManager) private var stateManager
+
     init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
         self._viewModel = State(initialValue: OnboardingPreferencesViewModel(
             onboardingRouter: onboardingRouter,
@@ -74,7 +75,7 @@ struct OnboardingPreferencesView: View {
             
             Spacer()
             
-            Button(action: { viewModel.savePreferences() }) {
+            Button(action: { viewModel.savePreferences(stateManager: stateManager) }) {
                 Text("Continue")
                     .frame(maxWidth: .infinity)
                     .padding()

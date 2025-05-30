@@ -11,6 +11,7 @@ struct OnboardingChecklistView: View {
     @State private var viewModel: OnboardingChecklistViewModel
     @State private var showCompletionAlert = false
     @Environment(AppRouter.self) private var appRouter
+    @Environment(\.onboardingStateManager) private var stateManager
     
     init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
         self._viewModel = State(initialValue: OnboardingChecklistViewModel(
@@ -32,9 +33,9 @@ struct OnboardingChecklistView: View {
                     .foregroundColor(.secondary)
                 
                 // Progress Bar
-                ProgressBarView(progress: viewModel.progress)
+                ProgressBarView(progress: stateManager.progress)
                     .padding(.horizontal)
-                    .animation(.spring(), value: viewModel.progress)
+                    .animation(.spring(), value: stateManager.progress)
             }
             .padding(.vertical, 24)
             
@@ -50,7 +51,7 @@ struct OnboardingChecklistView: View {
                         ForEach(OnboardingStep.allCases, id: \.self) { step in
                             ChecklistItemView(
                                 step: step,
-                                isCompleted: viewModel.isStepCompleted(step),
+                                isCompleted: stateManager.isStepCompleted(step),
                                 action: {
                                     viewModel.navigateToStep(step)
                                 }
@@ -65,7 +66,7 @@ struct OnboardingChecklistView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            if viewModel.canCompleteOnboarding {
+            if stateManager.allRequiredStepsCompleted {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Complete") {
                         showCompletionAlert = true
@@ -139,6 +140,10 @@ struct ChecklistItemView: View {
                                 .cornerRadius(4)
                         }
                     }
+                    
+                    Text(step.subtitle)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
                 
                 Spacer()

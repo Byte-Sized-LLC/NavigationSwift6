@@ -69,6 +69,7 @@
 				Onboarding/Checklist/OnboardingChecklistView.swift,
 				Onboarding/Checklist/OnboardingChecklistViewModel.swift,
 				Onboarding/OnboardingFlow.swift,
+				Onboarding/OnboardingStateManager.swift,
 				Onboarding/OnboardingStep.swift,
 				Onboarding/OnboardingStepView.swift,
 				Onboarding/OnboardingViewModel.swift,

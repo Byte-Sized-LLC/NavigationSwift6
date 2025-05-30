@@ -1,26 +1,41 @@
 //
-//  OnboardingChecklistViewModel.swift
+//  OnboardingStateManager.swift
 //  GenericNavigation
 //
-//  Created by Dylan Anderson on 5/23/25.
+//  Created by Dylan Anderson on 5/30/25.
 //
 
 import Foundation
 import SwiftUI
 
-@MainActor
+// Environment key for OnboardingStateManager
+private struct OnboardingStateManagerKey: EnvironmentKey {
+    static let defaultValue = OnboardingStateManager()
+}
+
+extension EnvironmentValues {
+    var onboardingStateManager: OnboardingStateManager {
+        get { self[OnboardingStateManagerKey.self] }
+        set { self[OnboardingStateManagerKey.self] = newValue }
+    }
+}
+
 @Observable
-final class OnboardingChecklistViewModel {
-    private let onboardingRouter: OnboardingRouter
-    private let dependencies: AppDependencies
-    
+final class OnboardingStateManager: @unchecked Sendable {
     @ObservationIgnored
     @AppStorage("completedOnboardingSteps") private var completedStepsData = Data()
     
     @ObservationIgnored
     @AppStorage("isOnboardingComplete") private var isOnboardingComplete: Bool = false
     
+    @ObservationIgnored
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
+    
     private(set) var completedSteps: Set<OnboardingStep> = []
+    
+    init() {
+        loadCompletedSteps()
+    }
     
     var progress: Double {
         let requiredCount = Double(OnboardingStep.requiredSteps.count)
@@ -28,51 +43,33 @@ final class OnboardingChecklistViewModel {
         return requiredCount > 0 ? completedCount / requiredCount : 0
     }
     
-    var canShowOptionalSteps: Bool {
+    var allRequiredStepsCompleted: Bool {
         OnboardingStep.requiredSteps.allSatisfy { completedSteps.contains($0) }
     }
     
-    var canCompleteOnboarding: Bool {
-        canShowOptionalSteps
-    }
-    
-    init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
-        self.onboardingRouter = onboardingRouter
-        self.dependencies = dependencies
-        loadCompletedSteps()
-    }
-    
-    func checkProgress() {
-        loadCompletedSteps()
+    var allStepsCompleted: Bool {
+        OnboardingStep.allCases.allSatisfy { completedSteps.contains($0) }
     }
     
     func isStepCompleted(_ step: OnboardingStep) -> Bool {
         completedSteps.contains(step)
     }
     
-    func navigateToStep(_ step: OnboardingStep) {
-        onboardingRouter.navigate(to: OnboardingRoute.step(step), style: .push)
-    }
-    
     func markStepCompleted(_ step: OnboardingStep) {
         completedSteps.insert(step)
         saveCompletedSteps()
-        
-        Task {
-            await dependencies.analyticsService.track(.custom("onboarding_step_completed", parameters: ["step": step.rawValue]))
-        }
     }
     
     func completeOnboarding() {
-        // Mark onboarding as complete
         isOnboardingComplete = true
-        
-        Task {
-            await dependencies.analyticsService.track(.custom("onboarding_completed", parameters: [
-                "completed_steps": String(completedSteps.count),
-                "total_steps": String(OnboardingStep.allCases.count)
-            ]))
-        }
+        hasSeenOnboarding = true
+    }
+    
+    func resetOnboarding() {
+        completedSteps.removeAll()
+        isOnboardingComplete = false
+        hasSeenOnboarding = false
+        saveCompletedSteps()
     }
     
     private func loadCompletedSteps() {

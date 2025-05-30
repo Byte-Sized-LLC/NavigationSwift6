@@ -25,7 +25,7 @@ final class OnboardingPreferencesViewModel {
         self.dependencies = dependencies
     }
     
-    func savePreferences() {
+    func savePreferences(stateManager: OnboardingStateManager) {
         Task {
             // Save preferences to UserDefaults or backend
             UserDefaults.standard.set(dailyDigest, forKey: "preference_daily_digest")
@@ -40,11 +40,12 @@ final class OnboardingPreferencesViewModel {
                 "language": selectedLanguage
             ]))
             
-            completeStep()
+            completeStep(stateManager: stateManager)
         }
     }
     
-    private func completeStep() {
+    private func completeStep(stateManager: OnboardingStateManager) {
+        stateManager.markStepCompleted(.preferences)
         onboardingRouter.popLast()
     }
 }
