@@ -1,3 +1,4 @@
+// OnboardingFlow.swift
 //
 //  OnboardingFlow.swift
 //  GenericNavigation
@@ -8,29 +9,37 @@
 import SwiftUI
 
 struct OnboardingFlow: View {
-    @Environment(AppRouter.self) private var appRouter
+    @Environment(OnboardingRouter.self) private var appRouter
     @Environment(AppDependencies.self) private var dependencies
+    @State private var isAuthenticated = false
+    @State private var completedSteps: Set<OnboardingStep> = []
     
     var body: some View {
-        NavigationStack {
-            OnboardingStepView(step: appRouter.currentOnboardingStep) {
-                Task {
-                    await advanceStep()
-                }
-            }
-            .navigationBarHidden(true)
-        }
+        /// Find a way to use the navigationwrapper here 
+//        TabNavigationWrapper {
+//            
+//        }
+//            Group {
+//                if !isAuthenticated {
+//                    Text("use the auth view")
+////                    OnboardingAuthenticationView(navigationManager: appRouter as! NavigationManager, dependencies: dependencies)
+//                } else {
+//                    OnboardingChecklistView(completedSteps: $completedSteps)
+//                        .navigationDestination(for: OnboardingStep.self) { step in
+//                            OnboardingStepView(step: step) {
+//                                Task {
+//                                    await completeStep(step)
+//                                }
+//                            }
+//                            .navigationTitle(step.navigationTitle)
+//                            .navigationBarTitleDisplayMode(.inline)
+//                        }
+//                }
+//            }
+        
     }
     
-    private func advanceStep() async {
-        await dependencies.analyticsService.track(.custom("onboarding_step_completed", parameters: ["step": appRouter.currentOnboardingStep.rawValue]))
-        
-        await MainActor.run {
-            if let nextStep = appRouter.currentOnboardingStep.next {
-                appRouter.currentOnboardingStep = nextStep
-            } else {
-                appRouter.completeOnboarding()
-            }
-        }
+    private func completeStep(_ step: OnboardingStep) async {
+        await dependencies.analyticsService.track(.custom("onboarding_step_completed", parameters: ["step": step.rawValue]))
     }
 }

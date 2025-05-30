@@ -1,0 +1,68 @@
+//
+//  OnboardingPermissionsViewModel.swift
+//  GenericNavigation
+//
+//  Created by Dylan Anderson on 5/23/25.
+//
+
+import Foundation
+
+@MainActor
+@Observable
+final class OnboardingPermissionsViewModel {
+    private let navigationManager: NavigationManager
+    private let dependencies: AppDependencies
+    
+    var notificationsGranted = false
+    var cameraGranted = false
+    var locationGranted = false
+    var hasRequestedPermissions = false
+    
+    init(navigationManager: NavigationManager, dependencies: AppDependencies) {
+        self.navigationManager = navigationManager
+        self.dependencies = dependencies
+    }
+    
+    func requestPermissions() {
+        if hasRequestedPermissions {
+            completeStep()
+            return
+        }
+        
+        Task {
+            // Simulate permission requests
+            try await Task.sleep(nanoseconds: 500_000_000)
+            notificationsGranted = true
+            
+            try await Task.sleep(nanoseconds: 300_000_000)
+            cameraGranted = true
+            
+            try await Task.sleep(nanoseconds: 300_000_000)
+            locationGranted = true
+            
+            hasRequestedPermissions = true
+            
+            await dependencies.analyticsService.track(.custom("onboarding_permissions_granted", parameters: [
+                "notifications": "true",
+                "camera": "true",
+                "location": "true"
+            ]))
+        }
+    }
+    
+    func skipPermissions() {
+        Task {
+            await dependencies.analyticsService.track(.custom("onboarding_permissions_skipped", parameters: nil))
+            completeStep()
+        }
+    }
+    
+    private func completeStep() {
+        if let router = navigationManager as? OnboardingRouter {
+            if let checklistVM = router.checklistViewModel {
+                checklistVM.markStepCompleted(.permissions)
+            }
+            router.popLast()
+        }
+    }
+}

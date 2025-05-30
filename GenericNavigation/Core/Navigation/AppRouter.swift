@@ -21,11 +21,6 @@ final class AppRouter: @unchecked Sendable {
     private let featureFlagManager: FeatureFlagService
 
     init() {
-        // Load persisted values
-        self.isOnboardingComplete = UserDefaults.standard.bool(forKey: "isOnboardingComplete")
-        let savedStep = UserDefaults.standard.string(forKey: "lastCompletedOnboardingStep") ?? OnboardingStep.welcome.rawValue
-        self.currentOnboardingStep = OnboardingStep(rawValue: savedStep) ?? .welcome
-        
         self.deepLinkManager = DeepLinkManager()
         self.featureFlagManager = FeatureFlagService()
     }
@@ -80,30 +75,6 @@ final class AppRouter: @unchecked Sendable {
             case .settings:
                 settingsRouter.navigateToWebView(route)
             }
-        }
-    }
-    
-    @MainActor
-    func completeOnboarding() {
-        isOnboardingComplete = true
-        currentOnboardingStep = .completion
-    }
-    
-    @MainActor
-    func resetOnboarding() {
-        isOnboardingComplete = false
-        currentOnboardingStep = .welcome
-    }
-    
-    var isOnboardingComplete: Bool {
-        didSet {
-            UserDefaults.standard.set(isOnboardingComplete, forKey: "isOnboardingComplete")
-        }
-    }
-    
-    var currentOnboardingStep: OnboardingStep {
-        didSet {
-            UserDefaults.standard.set(currentOnboardingStep.rawValue, forKey: "lastCompletedOnboardingStep")
         }
     }
     

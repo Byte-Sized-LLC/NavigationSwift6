@@ -12,6 +12,7 @@ typealias HomeRouter = Router<HomeRoute, AppAlert>
 typealias SearchRouter = Router<SearchRoute, AppAlert>
 typealias ProfileRouter = Router<ProfileRoute, AppAlert>
 typealias SettingsRouter = Router<SettingsRoute, AppAlert>
+typealias OnboardingRouter = Router<OnboardingRoute, AppAlert>
 
 @Observable
 final class Router<Route: AppRoute, Alert: Identifiable & Sendable>: @unchecked Sendable, RoutableNavigation {

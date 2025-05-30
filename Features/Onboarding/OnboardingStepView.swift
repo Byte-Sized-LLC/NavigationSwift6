@@ -10,29 +10,57 @@ import SwiftUI
 
 struct OnboardingStepView: View {
     let step: OnboardingStep
-    let onNext: () -> Void
+    let onComplete: () -> Void
     
     var body: some View {
         VStack(spacing: 40) {
             Spacer()
             
-            Image(systemName: iconName)
+            Image(systemName: step.iconName)
                 .font(.system(size: 80))
                 .foregroundColor(.blue)
             
-            Text(title)
+            Text(step.title)
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
-            Text(subtitle)
+            Text(step.subtitle)
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
             
+            // Additional content for specific steps
+            if step == .permissions {
+                Button(action: requestNotificationPermission) {
+                    Label("Enable Notifications", systemImage: "bell.badge")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue.opacity(0.1))
+                        .foregroundColor(.blue)
+                        .cornerRadius(10)
+                }
+                .padding(.horizontal, 40)
+            }
+            
+            if step == .profile {
+                VStack(spacing: 16) {
+                    Image(systemName: "person.crop.circle.badge.plus")
+                        .font(.system(size: 60))
+                        .foregroundColor(.gray)
+                    
+                    Text("Tap to add profile photo")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(12)
+            }
+            
             Spacer()
             
-            Button(action: onNext) {
-                Text(buttonTitle)
+            Button(action: onComplete) {
+                Text(step.buttonTitle)
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(Color.blue)
@@ -44,40 +72,8 @@ struct OnboardingStepView: View {
         }
     }
     
-    private var iconName: String {
-        switch step {
-        case .welcome: return "hand.wave.fill"
-        case .permissions: return "bell.fill"
-        case .profile: return "person.crop.circle.fill"
-        case .preferences: return "slider.horizontal.3"
-        case .completion: return "checkmark.circle.fill"
-        }
-    }
-    
-    private var title: String {
-        switch step {
-        case .welcome: return "Welcome!"
-        case .permissions: return "Stay Updated"
-        case .profile: return "Create Profile"
-        case .preferences: return "Set Preferences"
-        case .completion: return "All Set!"
-        }
-    }
-    
-    private var subtitle: String {
-        switch step {
-        case .welcome: return "Let's get you started with our app"
-        case .permissions: return "Enable notifications to stay in the loop"
-        case .profile: return "Tell us a bit about yourself"
-        case .preferences: return "Customize your experience"
-        case .completion: return "You're ready to explore"
-        }
-    }
-    
-    private var buttonTitle: String {
-        switch step {
-        case .completion: return "Get Started"
-        default: return "Continue"
-        }
+    private func requestNotificationPermission() {
+        // In a real app, you would request notification permissions here
+        print("Requesting notification permission")
     }
 }
