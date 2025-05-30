@@ -49,12 +49,40 @@ struct DebugSettingsView: View {
                     .foregroundColor(.red)
                 }
                 
+                Section("Onboarding State") {
+                    Text("Authenticated: \(onboardingStateManager.userIsAuthenticated ? "Yes" : "No")")
+                    Text("Progress: \(Int(onboardingStateManager.progress * 100))%")
+                    Text("Completed: \(onboardingStateManager.isOnboardingComplete ? "Yes" : "No")")
+                    
+                    if !onboardingStateManager.completedSteps.isEmpty {
+                        Text("Completed Steps:")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        ForEach(Array(onboardingStateManager.completedSteps), id: \.self) { step in
+                            Text("• \(step.title)")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                
                 Section("Debug Actions") {
                     Button("Reset Onboarding") {
-                        onboardingStateManager.resetOnboarding()
+                        Task {
+                            await onboardingStateManager.resetOnboarding()
+                        }
                         dismiss()
                     }
                     .foregroundColor(.orange)
+                    
+#if DEBUG
+                    Button("Print Debug State") {
+                        Task {
+                            await onboardingStateManager.debugPrintState()
+                        }
+                    }
+                    .foregroundColor(.blue)
+#endif
                     
                     Button("Trigger Test Crash") {
                         fatalError("Test crash")
@@ -63,7 +91,9 @@ struct DebugSettingsView: View {
                     
                     Button("Clear All Data") {
                         // Clear implementation
-                        onboardingStateManager.resetOnboarding()
+                        Task {
+                            await onboardingStateManager.resetOnboarding()
+                        }
                         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
                         dismiss()
                     }

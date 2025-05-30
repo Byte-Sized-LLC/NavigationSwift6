@@ -92,15 +92,15 @@ struct OnboardingChecklistView: View {
         onboardingRouter.navigate(to: OnboardingRoute.step(step), style: .push)
     }
     
+    @MainActor
     private func completeOnboarding() {
-        // Mark onboarding as complete
-        stateManager.completeOnboarding()
-        
         Task {
             await dependencies.analyticsService.track(.custom("onboarding_completed", parameters: [
                 "completed_steps": String(stateManager.completedSteps.count),
                 "total_steps": String(OnboardingStep.allCases.count)
             ]))
+            
+            await stateManager.completeOnboarding()
         }
     }
 }

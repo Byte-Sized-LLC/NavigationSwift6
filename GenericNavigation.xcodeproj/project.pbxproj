@@ -137,6 +137,10 @@
 				DependencyContainerProtocol.swift,
 				Services/AnalyticsServiceProtocol.swift,
 				Services/APIServiceProtocol.swift,
+				Services/LocalPersistance/KeychainPersistence.swift,
+				Services/LocalPersistance/LocalPersistanceService.swift,
+				Services/LocalPersistance/LocalPersistenceProtocol.swift,
+				Services/LocalPersistance/UserDefaultsPersistance.swift,
 				Services/UserServiceProtocol.swift,
 			);
 			target = 1EB5103D2DE0A0C800B2E978 /* GenericNavigation */;

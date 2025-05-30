@@ -11,19 +11,15 @@ protocol DependencyContainerProtocol: Sendable {
     associatedtype API: APIServiceProtocol
     associatedtype User: UserServiceProtocol
     associatedtype Analytics: AnalyticsServiceProtocol
+    associatedtype Persistence: LocalPersistenceProtocol
     
     var apiService: API { get }
     var userService: User { get }
     var analyticsService: Analytics { get }
+    var persistenceService: Persistence { get }
 }
 
 /// Ideas
-//
-//protocol StorageServiceProtocol: Sendable {
-//    func save<T: Encodable>(_ value: T, forKey key: String) async throws
-//    func load<T: Decodable>(forKey key: String) async throws -> T?
-//    func remove(forKey key: String) async
-//}
 
 //protocol NetworkMonitorServiceProtocol: Sendable {
 //    var isConnected: Bool { get }

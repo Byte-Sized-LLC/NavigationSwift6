@@ -16,7 +16,8 @@ struct OnboardingFlow: View {
         OnboardingNavigationWrapper(
             router: router,
             content: {
-                // If authenticated, go directly to checklist
+                // Always show the checklist if authenticated
+                // The checklist will show the current progress
                 if stateManager.userIsAuthenticated {
                     OnboardingChecklistView()
                 } else {
@@ -27,12 +28,6 @@ struct OnboardingFlow: View {
                 destinationView(for: route)
             }
         )
-        .onAppear {
-            // If user is authenticated but hasn't navigated to checklist yet
-            if stateManager.userIsAuthenticated && router.navigationPath.isEmpty {
-                router.navigate(to: .checklist, style: .push)
-            }
-        }
     }
     
     @ViewBuilder

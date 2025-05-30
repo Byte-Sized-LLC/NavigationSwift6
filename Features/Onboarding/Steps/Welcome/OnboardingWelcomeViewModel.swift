@@ -27,7 +27,7 @@ final class OnboardingWelcomeViewModel {
     func completeStep(stateManager: OnboardingStateManager) {
         Task {
             await dependencies.analyticsService.track(.custom("onboarding_welcome_completed", parameters: nil))
-            stateManager.markStepCompleted(.welcome)
+            await stateManager.markStepCompleted(.welcome)
             onboardingRouter.popLast()
         }
     }

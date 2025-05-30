@@ -12,6 +12,7 @@ final class AppDependencies: DependencyContainerProtocol, @unchecked Sendable {
     typealias API = APIService
     typealias User = UserService
     typealias Analytics = AnalyticsService
+    typealias Persistence = LocalPersistenceService
     
     private let lazy = LazyAppDependencies()
     
@@ -26,6 +27,10 @@ final class AppDependencies: DependencyContainerProtocol, @unchecked Sendable {
     var analyticsService: AnalyticsService {
         lazy.analyticsService
     }
+    
+    var persistenceService: LocalPersistenceService {
+        lazy.persistenceService
+    }
 }
 
 @Observable
@@ -33,6 +38,7 @@ final class LazyAppDependencies: @unchecked Sendable {
     private var _apiService: APIService?
     private var _userService: UserService?
     private var _analyticsService: AnalyticsService?
+    private var _persistenceService: LocalPersistenceService?
     
     var apiService: APIService {
         if _apiService == nil {
@@ -53,5 +59,13 @@ final class LazyAppDependencies: @unchecked Sendable {
             _analyticsService = AnalyticsService()
         }
         return _analyticsService!
+    }
+    
+    var persistenceService: LocalPersistenceService {
+        if _persistenceService == nil {
+            // You can configure this to use .keychain for sensitive data
+            _persistenceService = LocalPersistenceService(storageType: .userDefaults)
+        }
+        return _persistenceService!
     }
 }

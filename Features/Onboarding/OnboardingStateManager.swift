@@ -8,82 +8,148 @@
 import Foundation
 import SwiftUI
 
+// MARK: - Onboarding State Model
+struct OnboardingState: Codable {
+    var isAuthenticated: Bool = false
+    var completedSteps: Set<String> = []
+    var isComplete: Bool = false
+}
+
 @Observable
 final class OnboardingStateManager: @unchecked Sendable {
-    @ObservationIgnored
-    @AppStorage("completedOnboardingSteps") private var completedStepsData = Data()
+    // Storage keys
+    private static let onboardingStateKey = "onboardingState"
+    private static let onboardingCompleteKey = "isOnboardingComplete"
     
-    @ObservationIgnored
-    @AppStorage("isOnboardingComplete") private var isOnboardingCompleteStorage: Bool = false
+    // Dependencies
+    private let persistenceService: any LocalPersistenceProtocol
     
-    @ObservationIgnored
-    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
+    // In-memory state - Observable properties
+    private var state: OnboardingState = OnboardingState()
     
-    @ObservationIgnored
-    @AppStorage("isAuthenticated") private var isAuthenticated: Bool = false
+    // Observable property for completion state
+    private(set) var isOnboardingComplete: Bool = false
     
-    private(set) var completedSteps: Set<OnboardingStep> = []
-    
-    init() {
-        loadCompletedSteps()
+    init(persistenceService: (any LocalPersistenceProtocol)? = nil) {
+        self.persistenceService = persistenceService ?? LocalPersistenceService(storageType: .userDefaults)
+        
+        // Load completion state from UserDefaults
+        self.isOnboardingComplete = UserDefaults.standard.bool(forKey: Self.onboardingCompleteKey)
+        
+        // Load persisted state synchronously during initialization
+        Task { @MainActor in
+            await loadState()
+        }
     }
     
-    var isOnboardingComplete: Bool {
-        get { isOnboardingCompleteStorage }
-        set { isOnboardingCompleteStorage = newValue }
+    // MARK: - Public Properties
+    
+    var userIsAuthenticated: Bool {
+        get { state.isAuthenticated }
+        set {
+            Task { @MainActor in
+                state.isAuthenticated = newValue
+                await saveState()
+            }
+        }
+    }
+    
+    var completedSteps: Set<OnboardingStep> {
+        Set(state.completedSteps.compactMap { OnboardingStep(rawValue: $0) })
     }
     
     var progress: Double {
         let requiredCount = Double(OnboardingStep.requiredSteps.count)
-        let completedCount = Double(OnboardingStep.requiredSteps.filter { completedSteps.contains($0) }.count)
+        let completedCount = Double(OnboardingStep.requiredSteps.filter { isStepCompleted($0) }.count)
         return requiredCount > 0 ? completedCount / requiredCount : 0
     }
     
     var allRequiredStepsCompleted: Bool {
-        OnboardingStep.requiredSteps.allSatisfy { completedSteps.contains($0) }
+        OnboardingStep.requiredSteps.allSatisfy { isStepCompleted($0) }
     }
     
     var allStepsCompleted: Bool {
-        OnboardingStep.allCases.allSatisfy { completedSteps.contains($0) }
+        OnboardingStep.allCases.allSatisfy { isStepCompleted($0) }
     }
     
-    var userIsAuthenticated: Bool {
-        get { isAuthenticated }
-        set { isAuthenticated = newValue }
-    }
+    // MARK: - Public Methods
     
     func isStepCompleted(_ step: OnboardingStep) -> Bool {
-        completedSteps.contains(step)
+        state.completedSteps.contains(step.rawValue)
     }
     
-    func markStepCompleted(_ step: OnboardingStep) {
-        completedSteps.insert(step)
-        saveCompletedSteps()
+    @MainActor
+    func markStepCompleted(_ step: OnboardingStep) async {
+        state.completedSteps.insert(step.rawValue)
+        await saveState()
     }
     
-    func completeOnboarding() {
-        isOnboardingCompleteStorage = true
-        hasSeenOnboarding = true
+    @MainActor
+    func completeOnboarding() async {
+        // Clear the onboarding state
+        await clearOnboardingState()
+        
+        // Set completion flag - this will trigger UI update
+        isOnboardingComplete = true
+        UserDefaults.standard.set(true, forKey: Self.onboardingCompleteKey)
     }
     
-    func resetOnboarding() {
-        completedSteps.removeAll()
-        isOnboardingCompleteStorage = false
-        hasSeenOnboarding = false
-        isAuthenticated = false
-        saveCompletedSteps()
+    @MainActor
+    func resetOnboarding() async {
+        state = OnboardingState()
+        isOnboardingComplete = false
+        UserDefaults.standard.set(false, forKey: Self.onboardingCompleteKey)
+        
+        await clearOnboardingState()
     }
     
-    private func loadCompletedSteps() {
-        if let decoded = try? JSONDecoder().decode(Set<String>.self, from: completedStepsData) {
-            completedSteps = Set(decoded.compactMap { OnboardingStep(rawValue: $0) })
+    // MARK: - Private Methods
+    
+    @MainActor
+    private func loadState() async {
+        // Only load state if onboarding is not complete
+        guard !isOnboardingComplete else { return }
+        
+        do {
+            if let loadedState = try await persistenceService.load(OnboardingState.self, forKey: Self.onboardingStateKey) {
+                self.state = loadedState
+            }
+        } catch {
+            print("Failed to load onboarding state: \(error)")
         }
     }
     
-    private func saveCompletedSteps() {
-        let stepStrings = completedSteps.map { $0.rawValue }
-        if let encoded = try? JSONEncoder().encode(stepStrings) {
-            completedStepsData = encoded
+    private func saveState() async {
+        // Only save if onboarding is not complete
+        guard !isOnboardingComplete else { return }
+        
+        do {
+            try await persistenceService.save(state, forKey: Self.onboardingStateKey)
+        } catch {
+            print("Failed to save onboarding state: \(error)")
         }
     }
+    
+    private func clearOnboardingState() async {
+        do {
+            try await persistenceService.remove(forKey: Self.onboardingStateKey)
+        } catch {
+            print("Failed to clear onboarding state: \(error)")
+        }
+    }
+    
+    // MARK: - Debug Helpers
+    
+#if DEBUG
+    func debugPrintState() async {
+        print("=== Onboarding State ===")
+        print("Authenticated: \(state.isAuthenticated)")
+        print("Completed Steps: \(state.completedSteps)")
+        print("Is Complete: \(isOnboardingComplete)")
+        print("Progress: \(progress)")
+        let hasPersistedState = await persistenceService.exists(forKey: Self.onboardingStateKey)
+        print("Has Persisted State: \(hasPersistedState)")
+        print("=======================")
+    }
+#endif
 }

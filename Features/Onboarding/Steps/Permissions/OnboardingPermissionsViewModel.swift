@@ -59,7 +59,10 @@ final class OnboardingPermissionsViewModel {
     
     private func completeStep(stateManager: OnboardingStateManager) {
         // Mark step as completed using the state manager
-        stateManager.markStepCompleted(.permissions)
-        onboardingRouter.popLast()
+        Task {
+            // Mark step as completed using the state manager
+            await stateManager.markStepCompleted(.permissions)
+            onboardingRouter.popLast()
+        }
     }
 }

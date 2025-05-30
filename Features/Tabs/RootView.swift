@@ -13,11 +13,11 @@ struct RootView: View {
     @Environment(FeatureFlagService.self) private var featureFlags
     @Environment(OnboardingStateManager.self) private var onboardingStateManager
     @State private var showDebugMenu = false
-    @AppStorage("isOnboardingComplete") private var isOnboardingComplete: Bool = false
     
     var body: some View {
         Group {
-            if isOnboardingComplete {
+            // Check onboarding state from the state manager
+            if onboardingStateManager.isOnboardingComplete {
                 MainTabView()
             } else {
                 OnboardingFlow()
