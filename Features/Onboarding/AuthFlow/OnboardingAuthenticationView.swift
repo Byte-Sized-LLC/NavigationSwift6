@@ -140,7 +140,9 @@ struct OnboardingAuthenticationView: View {
                     await dependencies.analyticsService.track(.custom("onboarding_authenticated", parameters: nil))
                     
                     // Mark user as authenticated
-                    stateManager.userIsAuthenticated = true
+                    await MainActor.run {
+                        stateManager.setUserAuthenticated(true)
+                    }
                     
                     // Navigate to checklist
                     onboardingRouter.navigate(to: .checklist, style: .push)
@@ -157,7 +159,7 @@ struct OnboardingAuthenticationView: View {
     }
     
     private func skipAuthentication() {
-        stateManager.userIsAuthenticated = true
+        stateManager.setUserAuthenticated(true)
         onboardingRouter.navigate(to: .checklist, style: .push)
     }
 }

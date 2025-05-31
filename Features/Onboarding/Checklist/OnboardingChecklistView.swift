@@ -100,7 +100,7 @@ struct OnboardingChecklistView: View {
                 "total_steps": String(OnboardingStep.allCases.count)
             ]))
             
-            await stateManager.completeOnboarding()
+            stateManager.completeOnboarding()
         }
     }
 }

@@ -45,10 +45,7 @@ final class OnboardingPreferencesViewModel {
     }
     
     private func completeStep(stateManager: OnboardingStateManager) {
-        Task {
-            // Mark step as completed using the state manager
-            await stateManager.markStepCompleted(.preferences)
-            onboardingRouter.popLast()
-        }
+        stateManager.markStepCompleted(.preferences)
+        onboardingRouter.popLast()
     }
 }

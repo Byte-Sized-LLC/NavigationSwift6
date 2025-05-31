@@ -53,10 +53,7 @@ final class OnboardingProfileViewModel {
     }
     
     private func completeStep(stateManager: OnboardingStateManager) {
-        Task {
-            // Mark step as completed using the state manager
-            await stateManager.markStepCompleted(.profile)
-            onboardingRouter.popLast()
-        }
+        stateManager.markStepCompleted(.profile)
+        onboardingRouter.popLast()
     }
 }

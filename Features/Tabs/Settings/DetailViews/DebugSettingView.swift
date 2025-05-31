@@ -65,40 +65,6 @@ struct DebugSettingsView: View {
                         }
                     }
                 }
-                
-                Section("Debug Actions") {
-                    Button("Reset Onboarding") {
-                        Task {
-                            await onboardingStateManager.resetOnboarding()
-                        }
-                        dismiss()
-                    }
-                    .foregroundColor(.orange)
-                    
-#if DEBUG
-                    Button("Print Debug State") {
-                        Task {
-                            await onboardingStateManager.debugPrintState()
-                        }
-                    }
-                    .foregroundColor(.blue)
-#endif
-                    
-                    Button("Trigger Test Crash") {
-                        fatalError("Test crash")
-                    }
-                    .foregroundColor(.red)
-                    
-                    Button("Clear All Data") {
-                        // Clear implementation
-                        Task {
-                            await onboardingStateManager.resetOnboarding()
-                        }
-                        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-                        dismiss()
-                    }
-                    .foregroundColor(.red)
-                }
             }
             .navigationTitle("Debug Settings")
             .navigationBarTitleDisplayMode(.inline)
