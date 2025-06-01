@@ -47,6 +47,7 @@ struct OnboardingChecklistView: View {
                             ChecklistItemView(
                                 step: step,
                                 isCompleted: stateManager.isStepCompleted(step),
+                                isOptional: !step.isRequired,
                                 action: {
                                     navigateToStep(step)
                                 }
@@ -78,14 +79,6 @@ struct OnboardingChecklistView: View {
         } message: {
             Text("You've completed all required steps. You can always access optional settings later.")
         }
-        .onAppear {
-            checkProgress()
-        }
-    }
-    
-    private func checkProgress() {
-        // This triggers a UI update based on the current state
-        _ = stateManager.progress
     }
     
     private func navigateToStep(_ step: OnboardingStep) {
@@ -100,6 +93,7 @@ struct OnboardingChecklistView: View {
                 "total_steps": String(OnboardingStep.allCases.count)
             ]))
             
+            // Complete onboarding which will trigger navigation to main app
             stateManager.completeOnboarding()
         }
     }
@@ -110,13 +104,6 @@ struct ChecklistItemView: View {
     let isCompleted: Bool
     let isOptional: Bool
     let action: () -> Void
-    
-    init(step: OnboardingStep, isCompleted: Bool, isOptional: Bool = false, action: @escaping () -> Void) {
-        self.step = step
-        self.isCompleted = isCompleted
-        self.isOptional = isOptional
-        self.action = action
-    }
     
     var body: some View {
         Button(action: action) {

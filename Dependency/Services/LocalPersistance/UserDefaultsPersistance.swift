@@ -18,7 +18,6 @@ actor UserDefaultsPersistence: LocalPersistenceProtocol {
         let encoder = JSONEncoder()
         let data = try encoder.encode(value)
         userDefaults.set(data, forKey: key)
-        userDefaults.synchronize()
     }
     
     func load<T: Codable>(_ type: T.Type, forKey key: String) async throws -> T? {
@@ -32,7 +31,6 @@ actor UserDefaultsPersistence: LocalPersistenceProtocol {
     
     func remove(forKey key: String) async throws {
         userDefaults.removeObject(forKey: key)
-        userDefaults.synchronize()
     }
     
     func exists(forKey key: String) async -> Bool {

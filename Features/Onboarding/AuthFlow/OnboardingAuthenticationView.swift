@@ -106,16 +106,6 @@ struct OnboardingAuthenticationView: View {
             }
             
             Spacer()
-            
-            // Skip for testing
-#if DEBUG
-            Button("Skip (Debug)") {
-                skipAuthentication()
-            }
-            .font(.caption)
-            .foregroundColor(.secondary)
-            .padding(.bottom)
-#endif
         }
         .navigationTitle("")
         .navigationBarHidden(true)
@@ -138,13 +128,7 @@ struct OnboardingAuthenticationView: View {
                 // Demo credentials check
                 if username.lowercased() == "demo" && password == "demo" {
                     await dependencies.analyticsService.track(.custom("onboarding_authenticated", parameters: nil))
-                    
-                    // Mark user as authenticated
-                    await MainActor.run {
-                        stateManager.setUserAuthenticated(true)
-                    }
-                    
-                    // Navigate to checklist
+                    stateManager.setUserAuthenticated(true)
                     onboardingRouter.navigate(to: .checklist, style: .push)
                 } else {
                     throw AuthenticationError.invalidCredentials

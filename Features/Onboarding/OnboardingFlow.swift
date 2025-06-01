@@ -16,12 +16,10 @@ struct OnboardingFlow: View {
         OnboardingNavigationWrapper(
             router: router,
             content: {
-                // Always show the checklist if authenticated
-                // The checklist will show the current progress
-                if stateManager.userIsAuthenticated {
-                    OnboardingChecklistView()
-                } else {
+                if stateManager.onboardingStep == nil {
                     OnboardingAuthenticationView()
+                } else {
+                    OnboardingChecklistView()
                 }
             },
             destinationBuilder: { route in
@@ -39,6 +37,8 @@ struct OnboardingFlow: View {
             OnboardingChecklistView()
         case .step(let step):
             switch step {
+            case .signIn:
+                EmptyView()
             case .welcome:
                 OnboardingWelcomeView(
                     onboardingRouter: router,

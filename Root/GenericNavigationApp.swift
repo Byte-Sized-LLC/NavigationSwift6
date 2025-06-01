@@ -30,7 +30,7 @@ struct GenericNavigationApp: App {
         _featureFlags = State(initialValue: FeatureFlagService())
         
         // Initialize onboarding state manager with persistence service
-        _onboardingStateManager = State(initialValue: OnboardingStateManager(persistenceService: deps.persistenceService))
+        _onboardingStateManager = State(initialValue: OnboardingStateManager())
     }
     
     var body: some Scene {

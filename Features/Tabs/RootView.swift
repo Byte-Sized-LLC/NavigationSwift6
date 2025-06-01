@@ -14,10 +14,11 @@ struct RootView: View {
     @Environment(OnboardingStateManager.self) private var onboardingStateManager
     @State private var showDebugMenu = false
     
+    
     var body: some View {
         Group {
             // Check onboarding state from the state manager
-            if onboardingStateManager.isOnboardingComplete {
+            if onboardingStateManager.onboardingComplete {
                 MainTabView()
             } else {
                 OnboardingFlow()

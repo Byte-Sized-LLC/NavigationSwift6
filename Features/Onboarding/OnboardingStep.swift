@@ -8,18 +8,17 @@
 import Foundation
 
 enum OnboardingStep: String, CaseIterable, Sendable {
+    case signIn
     case welcome
     case permissions
     case profile
     case preferences
     
-    var next: OnboardingStep? {
-        switch self {
-        case .welcome: return .permissions
-        case .permissions: return .profile
-        case .profile: return .preferences
-        case .preferences: return nil
+    init?(_ rawValue: String?) {
+        guard let rawValue = rawValue, let step = OnboardingStep(rawValue: rawValue) else {
+            return nil
         }
+        self = step
     }
     
     var isRequired: Bool {
@@ -39,6 +38,7 @@ enum OnboardingStep: String, CaseIterable, Sendable {
     
     var iconName: String {
         switch self {
+        case .signIn: return "person.fill"
         case .welcome: return "hand.wave.fill"
         case .permissions: return "bell.fill"
         case .profile: return "person.crop.circle.fill"
@@ -48,6 +48,7 @@ enum OnboardingStep: String, CaseIterable, Sendable {
     
     var title: String {
         switch self {
+        case .signIn: return "Sign In"
         case .welcome: return "Welcome!"
         case .permissions: return "Stay Updated"
         case .profile: return "Create Profile"
@@ -57,6 +58,7 @@ enum OnboardingStep: String, CaseIterable, Sendable {
     
     var subtitle: String {
         switch self {
+        case .signIn: return "Sign in to your account"
         case .welcome: return "Let's get you started with our app"
         case .permissions: return "Enable notifications to stay in the loop"
         case .profile: return "Tell us a bit about yourself"
@@ -66,6 +68,7 @@ enum OnboardingStep: String, CaseIterable, Sendable {
     
     var buttonTitle: String {
         switch self {
+        case .signIn: return "Sign In"
         case .permissions: return "Continue"
         case .profile: return "Save Profile"
         case .preferences: return "Save Preferences"
