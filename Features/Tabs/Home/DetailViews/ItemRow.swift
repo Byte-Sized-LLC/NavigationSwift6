@@ -15,7 +15,7 @@ struct ItemRow: View {
             VStack(alignment: .leading) {
                 Text(item.title)
                     .font(.headline)
-                Text(item.description)
+                Text(item.itemDescription)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

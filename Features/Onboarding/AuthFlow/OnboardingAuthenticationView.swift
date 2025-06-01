@@ -128,8 +128,38 @@ struct OnboardingAuthenticationView: View {
                 // Demo credentials check
                 if username.lowercased() == "demo" && password == "demo" {
                     await dependencies.analyticsService.track(.custom("onboarding_authenticated", parameters: nil))
+                    
+                    // Mark user as authenticated
                     stateManager.setUserAuthenticated(true)
-                    onboardingRouter.navigate(to: .checklist, style: .push)
+                    
+                    // Check authentication state to determine next step
+                    let authState = await stateManager.checkAuthenticationState()
+                    
+                    switch authState {
+                    case .onboardingComplete:
+                        // User has completed everything, this shouldn't happen in onboarding flow
+                        // but if it does, complete onboarding
+                        stateManager.completeOnboarding()
+                        
+                    case .needsOnboarding(let nextStep):
+                        // Navigate to the next incomplete step
+                        onboardingRouter.navigate(to: .checklist, style: .push)
+
+                        
+                    case .needsFullOnboarding:
+                        // New user, start with welcome
+                        onboardingRouter.navigate(to: .checklist, style: .push)
+
+                    case .authenticated:
+                        // Has profile but might need to complete some steps
+                        onboardingRouter.navigate(to: .checklist, style: .push)
+
+                        
+                    case .notAuthenticated:
+                        // This shouldn't happen after successful auth
+                        errorMessage = "Authentication failed. Please try again."
+                    }
+                    
                 } else {
                     throw AuthenticationError.invalidCredentials
                 }
@@ -140,10 +170,5 @@ struct OnboardingAuthenticationView: View {
             
             isLoading = false
         }
-    }
-    
-    private func skipAuthentication() {
-        stateManager.setUserAuthenticated(true)
-        onboardingRouter.navigate(to: .checklist, style: .push)
     }
 }

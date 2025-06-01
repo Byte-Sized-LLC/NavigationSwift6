@@ -29,7 +29,9 @@ actor HomeStore: Store {
         case itemsLoaded([Item])
         case loadFailed(String)
         case selectCategory(String?)
-        case deleteItem(String)
+        case deleteItem(Item)
+        case addItem(Item)
+        case updateItem(Item)
     }
     
     var stateStream: AsyncStream<HomeState> {
@@ -51,13 +53,21 @@ actor HomeStore: Store {
             continuation?.yield(state)
             
             do {
-                // Simulate async loading
-                try await Task.sleep(nanoseconds: 1_000_000_000)
-                let items = [
-                    Item(id: "1", title: "Item 1", description: "Description 1", imageURL: nil),
-                    Item(id: "2", title: "Item 2", description: "Description 2", imageURL: nil)
-                ]
-                await dispatch(.itemsLoaded(items))
+                // Load from SwiftData persistence
+                let savedItems = try await dependencies.persistenceService.loadItems()
+                
+                if savedItems.isEmpty {
+                    // If no saved items, fetch from API
+                    let apiItems = try await fetchItemsFromAPI()
+                    await dispatch(.itemsLoaded(apiItems))
+                    
+                    // Save to persistence
+                    for item in apiItems {
+                        try await dependencies.persistenceService.saveItem(item)
+                    }
+                } else {
+                    await dispatch(.itemsLoaded(savedItems))
+                }
             } catch {
                 await dispatch(.loadFailed(error.localizedDescription))
             }
@@ -77,9 +87,51 @@ actor HomeStore: Store {
             continuation?.yield(state)
             await dispatch(.loadItems)
             
-        case .deleteItem(let itemId):
-            state.items.removeAll { $0.id == itemId }
+        case .deleteItem(let item):
+            state.items.removeAll { $0.id == item.id }
             continuation?.yield(state)
+            
+            // Delete from persistence
+            do {
+                try await dependencies.persistenceService.deleteItem(item)
+            } catch {
+                print("Failed to delete item: \(error)")
+            }
+            
+        case .addItem(let item):
+            state.items.append(item)
+            continuation?.yield(state)
+            
+            // Save to persistence
+            do {
+                try await dependencies.persistenceService.saveItem(item)
+            } catch {
+                print("Failed to save item: \(error)")
+            }
+            
+        case .updateItem(let updatedItem):
+            if let index = state.items.firstIndex(where: { $0.id == updatedItem.id }) {
+                state.items[index] = updatedItem
+                continuation?.yield(state)
+                
+                // Update in persistence
+                do {
+                    try await dependencies.persistenceService.saveItem(updatedItem)
+                } catch {
+                    print("Failed to update item: \(error)")
+                }
+            }
         }
+    }
+    
+    private func fetchItemsFromAPI() async throws -> [Item] {
+        // Simulate API call
+        try await Task.sleep(nanoseconds: 1_000_000_000)
+        
+        return [
+            Item(id: UUID().uuidString, title: "Item 1", description: "Description 1"),
+            Item(id: UUID().uuidString, title: "Item 2", description: "Description 2"),
+            Item(id: UUID().uuidString, title: "Item 3", description: "Description 3")
+        ]
     }
 }

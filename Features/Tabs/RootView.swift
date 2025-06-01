@@ -46,11 +46,3 @@ struct RootView: View {
         .padding()
     }
 }
-
-#Preview {
-    RootView()
-        .environment(AppRouter())
-        .environment(AppDependencies())
-        .environment(FeatureFlagService())
-        .environment(OnboardingStateManager())
-}

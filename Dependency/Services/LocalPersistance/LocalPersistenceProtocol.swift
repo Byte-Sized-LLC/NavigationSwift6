@@ -16,7 +16,10 @@ enum PersistenceStorageType: Sendable {
 
 // MARK: - Persistence Protocol
 protocol LocalPersistenceProtocol: Sendable {
-
+    func save<T: Codable>(_ object: T, forKey key: String) async throws
+    func load<T: Codable>(_ type: T.Type, forKey key: String) async throws -> T?
+    func delete(forKey key: String) async throws
+    func exists(forKey key: String) async -> Bool
 }
 
 // MARK: - Persistence Errors

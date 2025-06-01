@@ -1,27 +1,27 @@
 //
-//  TabNavigatorWrapper.swift
+//  GenericNavigationWrapper.swift
 //  GenericNavigation
 //
-//  Created by Dylan Anderson on 5/23/25.
+//  Created by Dylan Anderson on 6/1/25.
 //
 
 import SwiftUI
 
-struct TabNavigationWrapper<Content: View, Router: RoutableNavigation & Observable>: View {
+struct GenericNavigationWrapper<Content: View, Router: RoutableNavigation & Observable>: View {
     let content: Content
-    let tab: RootTab
     @Bindable var router: Router
     let destinationBuilder: (Router.Route) -> AnyView
+    let analyticsPrefix: String
     @Environment(\.analyticsService) private var analytics
     
     init(
-        tab: RootTab,
         router: Router,
+        analyticsPrefix: String,
         @ViewBuilder content: () -> Content,
         @ViewBuilder destinationBuilder: @escaping (Router.Route) -> some View
     ) {
-        self.tab = tab
         self._router = Bindable(router)
+        self.analyticsPrefix = analyticsPrefix
         self.content = content()
         self.destinationBuilder = { AnyView(destinationBuilder($0)) }
     }
@@ -33,53 +33,30 @@ struct TabNavigationWrapper<Content: View, Router: RoutableNavigation & Observab
                     destinationBuilder(route)
                         .onAppear {
                             Task {
-                                await analytics.track(.screenView("\(tab.title) - \(route.id)"))
+                                await analytics.track(.screenView("\(analyticsPrefix) - \(route.id)"))
                             }
                         }
                 }
                 .navigationDestination(for: WebRoute.self) { route in
-                    Text("webview here \(route)")
+                    Text("WebView: \(route)")
                         .onAppear {
                             Task {
-                                await analytics.track(.screenView("\(tab.title) WebView"))
+                                await analytics.track(.screenView("\(analyticsPrefix) WebView"))
                             }
                         }
                 }
         }
         .sheet(item: $router.sheetItem) { sheet in
             destinationBuilder(sheet.route)
+                .presentationDetents(sheet.detents)
                 .onAppear {
                     Task {
-                        await analytics.track(.screenView("\(tab.title) Sheet - \(sheet.route.id)"))
+                        await analytics.track(.screenView("\(analyticsPrefix) Sheet - \(sheet.route.id)"))
                     }
                 }
         }
         .alert(item: $router.alertItem) { alert in
             alert.alert
-        }
-        .tabItem {
-            Label(tab.title, systemImage: tab.icon)
-        }
-        .tag(tab)
-        .task {
-            await analytics.track(.screenView(tab.title))
-        }
-    }
-}
-
-// MARK: - Tab Configuration
-extension TabNavigationWrapper {
-    struct Configuration {
-        let title: String
-        let icon: String
-        let selectedIcon: String?
-        
-        static func standard(title: String, icon: String) -> Configuration {
-            Configuration(title: title, icon: icon, selectedIcon: nil)
-        }
-        
-        static func withSelected(title: String, icon: String, selectedIcon: String) -> Configuration {
-            Configuration(title: title, icon: icon, selectedIcon: selectedIcon)
         }
     }
 }

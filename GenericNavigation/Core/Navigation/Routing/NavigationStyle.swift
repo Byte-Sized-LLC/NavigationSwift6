@@ -10,5 +10,5 @@ import SwiftUI
 
 enum NavigationStyle: Equatable {
     case push
-    case sheet(detents: [PresentationDetent] = [.large])
+    case sheet(detents: Set<PresentationDetent> = [.large])
 }

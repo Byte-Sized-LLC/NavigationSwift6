@@ -12,9 +12,9 @@ struct SettingsNavigationView: View {
     @Environment(FeatureFlagService.self) private var featureFlagService
     
     var body: some View {
-        TabNavigationWrapper(
-            tab: .settings,
+        GenericNavigationWrapper(
             router: appRouter.settingsRouter,
+            analyticsPrefix: "Settings",
             content: {
                 let viewModel = SettingsViewModel(navigationManager: appRouter, featureFlagService: featureFlagService)
                 SettingsView(viewModel: viewModel)
@@ -23,6 +23,10 @@ struct SettingsNavigationView: View {
                 destinationView(for: route)
             }
         )
+        .tabItem {
+            Label(RootTab.settings.title, systemImage: RootTab.settings.icon)
+        }
+        .tag(RootTab.settings)
     }
     
     @ViewBuilder

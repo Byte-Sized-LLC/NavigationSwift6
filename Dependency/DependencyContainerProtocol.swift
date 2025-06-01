@@ -11,12 +11,12 @@ protocol DependencyContainerProtocol: Sendable {
     associatedtype API: APIServiceProtocol
     associatedtype User: UserServiceProtocol
     associatedtype Analytics: AnalyticsServiceProtocol
-    associatedtype Persistence: LocalPersistenceProtocol
+    associatedtype LocalPersistence: LocalPersistenceProtocol
     
     var apiService: API { get }
     var userService: User { get }
     var analyticsService: Analytics { get }
-    var persistenceService: Persistence { get }
+    var persistenceService: LocalPersistence { get }
 }
 
 /// Ideas

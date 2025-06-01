@@ -10,5 +10,5 @@ import SwiftUI
 struct SheetItem<Route: Hashable>: Identifiable {
     let id = UUID()
     let route: Route
-    let detents: [PresentationDetent]
+    let detents: Set<PresentationDetent>
 }

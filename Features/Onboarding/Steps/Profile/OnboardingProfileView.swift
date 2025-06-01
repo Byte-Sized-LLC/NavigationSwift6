@@ -15,7 +15,9 @@ struct OnboardingProfileView: View {
     init(onboardingRouter: OnboardingRouter, dependencies: AppDependencies) {
         self._viewModel = State(initialValue: OnboardingProfileViewModel(
             onboardingRouter: onboardingRouter,
-            dependencies: dependencies
+            localPersistenceService: dependencies.persistenceService,
+            userService: dependencies.userService,
+            analyticsService: dependencies.analyticsService
         ))
     }
     
@@ -95,7 +97,7 @@ struct OnboardingProfileView: View {
         .navigationTitle("Profile")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            isNameFocused = true
+            viewModel.loadExistingProfile(from: stateManager)
         }
     }
 }

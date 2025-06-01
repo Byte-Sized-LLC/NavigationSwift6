@@ -12,9 +12,9 @@ struct SearchNavigationView: View {
     @Environment(FeatureFlagService.self) private var featureFlags
     
     var body: some View {
-        TabNavigationWrapper(
-            tab: .search,
+        GenericNavigationWrapper(
             router: appRouter.searchRouter,
+            analyticsPrefix: "Search",
             content: {
                 SearchView()
             },
@@ -22,6 +22,10 @@ struct SearchNavigationView: View {
                 destinationView(for: route)
             }
         )
+        .tabItem {
+            Label(RootTab.search.title, systemImage: RootTab.search.icon)
+        }
+        .tag(RootTab.search)
     }
     
     @ViewBuilder

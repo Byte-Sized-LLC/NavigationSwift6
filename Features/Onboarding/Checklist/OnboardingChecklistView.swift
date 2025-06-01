@@ -49,6 +49,7 @@ struct OnboardingChecklistView: View {
                                 isCompleted: stateManager.isStepCompleted(step),
                                 isOptional: !step.isRequired,
                                 action: {
+                                    guard !stateManager.isStepCompleted(step) else { return }
                                     navigateToStep(step)
                                 }
                             )

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Observation
+import SwiftData
 
 @main
 struct GenericNavigationApp: App {
@@ -30,7 +31,9 @@ struct GenericNavigationApp: App {
         _featureFlags = State(initialValue: FeatureFlagService())
         
         // Initialize onboarding state manager with persistence service
-        _onboardingStateManager = State(initialValue: OnboardingStateManager())
+        _onboardingStateManager = State(initialValue: OnboardingStateManager(
+            persistenceService: deps.persistenceService
+        ))
     }
     
     var body: some Scene {
@@ -50,6 +53,7 @@ struct GenericNavigationApp: App {
                         await handleScenePhase(newPhase)
                     }
                 }
+                .modelContainer(for: Item.self) // SwiftData model container for Item
         }
     }
     

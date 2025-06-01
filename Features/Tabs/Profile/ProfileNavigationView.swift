@@ -12,18 +12,21 @@ struct ProfileNavigationView: View {
     @Environment(AppDependencies.self) private var dependencies
     
     var body: some View {
-        TabNavigationWrapper(
-            tab: .profile,
+        GenericNavigationWrapper(
             router: appRouter.profileRouter,
+            analyticsPrefix: "Profile",
             content: {
                 let store = ProfileStore(dependencies: dependencies)
                 let viewModel = ProfileViewModel(store: store, navigationManager: appRouter)
                 ProfileView(viewModel: viewModel, userId: "current")
-            },
-            destinationBuilder: { route in
+            }, destinationBuilder: { route in
                 destinationView(for: route)
             }
         )
+        .tabItem {
+            Label(RootTab.profile.title, systemImage: RootTab.profile.icon)
+        }
+        .tag(RootTab.profile)
     }
     
     @ViewBuilder

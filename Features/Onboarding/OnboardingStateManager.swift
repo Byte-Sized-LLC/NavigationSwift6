@@ -8,40 +8,30 @@
 import Foundation
 import SwiftUI
 
+enum AuthenticationState {
+    case notAuthenticated
+    case authenticated
+    case needsOnboarding(nextStep: OnboardingStep?)
+    case needsFullOnboarding
+    case onboardingComplete
+}
+
 @Observable
 final class OnboardingStateManager: @unchecked Sendable {
-    var completedSteps: Set<OnboardingStep> = []
-    var onboardingStep: OnboardingStep?
-    var onboardingComplete: Bool = false
+    private let persistenceService: LocalPersistenceService
     
-    init() {
-        self.onboardingComplete = UserDefaults.standard.bool(forKey: "onboardingComplete")
-        let onboardingString = UserDefaults.standard.string(forKey: "onboardingStep") ?? ""
-        self.onboardingStep = OnboardingStep(rawValue: onboardingString)
+    var completedSteps: Set<OnboardingStep> = []
+    var currentStep: OnboardingStep?
+    var onboardingComplete: Bool = false
+    var isAuthenticated: Bool = false
+    var userProfile: UserProfile?
+    
+    init(persistenceService: LocalPersistenceService) {
+        self.persistenceService = persistenceService
         
-        switch onboardingStep {
-        case .signIn:
-            completedSteps.insert(.signIn)
-        case .welcome:
-            completedSteps.insert(.signIn)
-            completedSteps.insert(.welcome)
-        case .permissions:
-            completedSteps.insert(.signIn)
-            completedSteps.insert(.welcome)
-            completedSteps.insert(.permissions)
-        case .profile:
-            completedSteps.insert(.signIn)
-            completedSteps.insert(.welcome)
-            completedSteps.insert(.permissions)
-            completedSteps.insert(.profile)
-        case .preferences:
-            completedSteps.insert(.signIn)
-            completedSteps.insert(.welcome)
-            completedSteps.insert(.permissions)
-            completedSteps.insert(.profile)
-            completedSteps.insert(.preferences)
-        case .none:
-            completedSteps = []
+        // Load state immediately in init
+        Task {
+            await loadPersistedState()
         }
     }
     
@@ -56,24 +46,163 @@ final class OnboardingStateManager: @unchecked Sendable {
         OnboardingStep.requiredSteps.allSatisfy { isStepCompleted($0) }
     }
     
+    var needsProfileCompletion: Bool {
+        !isStepCompleted(.profile) || userProfile == nil || userProfile?.name.isEmpty == true
+    }
+    
+    var nextIncompleteStep: OnboardingStep? {
+        // Find the first step that hasn't been completed
+        for step in OnboardingStep.allCases {
+            if !isStepCompleted(step) {
+                return step
+            }
+        }
+        return nil
+    }
+    
+    var nextRequiredIncompleteStep: OnboardingStep? {
+        // Find the first required step that hasn't been completed
+        for step in OnboardingStep.requiredSteps {
+            if !isStepCompleted(step) {
+                return step
+            }
+        }
+        return nil
+    }
+    
     // MARK: - Public Methods
     func isStepCompleted(_ step: OnboardingStep) -> Bool {
         completedSteps.contains(step)
     }
     
     func setUserAuthenticated(_ authenticated: Bool) {
-        completedSteps.insert(.signIn)
-        UserDefaults.standard.set(OnboardingStep.signIn.rawValue, forKey: "onboardingStep")
+        isAuthenticated = authenticated
+        if authenticated {
+            markStepCompleted(.signIn)
+        } else {
+            // If logging out, reset authentication-related state
+            completedSteps.remove(.signIn)
+            userProfile = nil
+        }
     }
     
     func markStepCompleted(_ step: OnboardingStep) {
-        UserDefaults.standard.set(step.rawValue, forKey: "onboardingStep")
         completedSteps.insert(step)
+        currentStep = step
+        
+        // Check if all required steps are now complete
+        if allRequiredStepsCompleted && !onboardingComplete {
+            // Optionally auto-complete onboarding if all required steps are done
+            // You might want to show a completion screen instead
+        }
+        
+        Task {
+            await saveState()
+        }
+    }
+    
+    func markStepIncomplete(_ step: OnboardingStep) {
+        completedSteps.remove(step)
+        Task {
+            await saveState()
+        }
     }
     
     func completeOnboarding() {
-        UserDefaults.standard.set(true, forKey: "onboardingComplete")
         onboardingComplete = true
-        onboardingStep = nil
+        currentStep = nil
+        Task {
+            await saveState()
+        }
+    }
+    
+    func resetOnboarding() {
+        completedSteps.removeAll()
+        currentStep = nil
+        onboardingComplete = false
+        isAuthenticated = false
+        userProfile = nil
+        Task {
+            await saveState()
+            try? await persistenceService.delete(forKey: "user_profile")
+        }
+    }
+    
+    func checkAuthenticationState() async -> AuthenticationState {
+        // Ensure we have the latest persisted state
+        await loadPersistedState()
+        
+        // Not authenticated
+        if !isAuthenticated {
+            return .notAuthenticated
+        }
+        
+        // Authenticated but no profile
+        if userProfile == nil {
+            return .needsFullOnboarding
+        }
+        
+        // Check if onboarding is complete
+        if onboardingComplete {
+            return .onboardingComplete
+        }
+        
+        // Check if there are incomplete required steps
+        if let nextRequired = nextRequiredIncompleteStep {
+            return .needsOnboarding(nextStep: nextRequired)
+        }
+        
+        // All required steps complete but not marked as complete
+        if allRequiredStepsCompleted {
+            completeOnboarding()
+            return .onboardingComplete
+        }
+        
+        // Default to needing onboarding
+        return .needsOnboarding(nextStep: nextIncompleteStep)
+    }
+    
+    func getNextStepRoute() -> OnboardingRoute? {
+        // If not authenticated, go to authentication
+        if !isAuthenticated {
+            return .authentication
+        }
+        
+        // Find next incomplete step
+        if let nextStep = nextIncompleteStep {
+            return .step(nextStep)
+        }
+        
+        // All steps complete, go to checklist
+        return .checklist
+    }
+    
+    // MARK: - Private Methods
+    @MainActor
+    private func loadPersistedState() async {
+        // Load onboarding state from UserDefaults
+        if let persistedState = try? await persistenceService.loadOnboardingState() {
+            let (steps, current, complete, authenticated) = persistedState.toOnboardingState()
+            self.completedSteps = steps
+            self.currentStep = current
+            self.onboardingComplete = complete
+            self.isAuthenticated = authenticated
+        }
+        
+        // Load user profile from Keychain
+        if let profile = try? await persistenceService.loadUserProfile() {
+            self.userProfile = profile
+        }
+    }
+    
+    private func saveState() async {
+        let model = OnboardingPersistenceModel(
+            completedSteps: completedSteps,
+            currentStep: currentStep,
+            isComplete: onboardingComplete,
+            isAuthenticated: isAuthenticated
+        )
+        
+        try? await persistenceService.saveOnboardingState(model)
     }
 }

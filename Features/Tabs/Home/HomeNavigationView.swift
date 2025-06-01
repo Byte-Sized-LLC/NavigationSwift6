@@ -18,9 +18,9 @@ struct HomeNavigationView: View {
     }
     
     var body: some View {
-        TabNavigationWrapper(
-            tab: .home,
+        GenericNavigationWrapper(
             router: appRouter.homeRouter,
+            analyticsPrefix: "Home",
             content: {
                 HomeView(viewModel: viewModel)
             },
@@ -28,6 +28,10 @@ struct HomeNavigationView: View {
                 destinationView(for: route)
             }
         )
+        .tabItem {
+            Label(RootTab.home.title, systemImage: RootTab.home.icon)
+        }
+        .tag(RootTab.home)
         .onAppear {
             viewModel.loadItems()
         }

@@ -52,7 +52,7 @@ final class HomeViewModel: ViewModel {
     
     func deleteItem(_ item: Item) {
         Task {
-            await store.dispatch(.deleteItem(item.id))
+            await store.dispatch(.deleteItem(item))
         }
     }
 }

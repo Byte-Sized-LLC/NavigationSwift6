@@ -12,20 +12,47 @@ struct OnboardingFlow: View {
     @Environment(AppDependencies.self) private var dependencies
     @Environment(OnboardingStateManager.self) private var stateManager
     
+    @State private var isLoading = true
+    @State private var initialRoute: OnboardingRoute?
+    
     var body: some View {
-        OnboardingNavigationWrapper(
-            router: router,
-            content: {
-                if stateManager.onboardingStep == nil {
-                    OnboardingAuthenticationView()
-                } else {
-                    OnboardingChecklistView()
+        Group {
+            if isLoading {
+                ProgressView("Loading...")
+                    .task {
+                        await determineInitialRoute()
+                    }
+            } else {
+                GenericNavigationWrapper(router: router, analyticsPrefix: "Onboarding") {
+                    if let route = initialRoute {
+                        destinationView(for: route)
+                    } else {
+                        // Default to authentication if no route determined
+                        OnboardingAuthenticationView()
+                    }
+                } destinationBuilder: { route in
+                    destinationView(for: route)
                 }
-            },
-            destinationBuilder: { route in
-                destinationView(for: route)
             }
-        )
+        }
+    }
+    
+    private func determineInitialRoute() async {
+        let authState = await stateManager.checkAuthenticationState()
+        
+        switch authState {
+        case .notAuthenticated:
+            initialRoute = .authentication
+        case .authenticated, .onboardingComplete:
+            // Should not be in onboarding flow
+            initialRoute = nil
+        case .needsOnboarding(let nextStep):
+            initialRoute = .checklist
+        case .needsFullOnboarding:
+            initialRoute = .checklist
+        }
+        
+        isLoading = false
     }
     
     @ViewBuilder
@@ -38,7 +65,7 @@ struct OnboardingFlow: View {
         case .step(let step):
             switch step {
             case .signIn:
-                EmptyView()
+                OnboardingAuthenticationView()
             case .welcome:
                 OnboardingWelcomeView(
                     onboardingRouter: router,
@@ -64,44 +91,4 @@ struct OnboardingFlow: View {
     }
 }
 
-struct OnboardingNavigationWrapper<Content: View>: View {
-    let content: Content
-    @Bindable var router: OnboardingRouter
-    let destinationBuilder: (OnboardingRoute) -> AnyView
-    @Environment(\.analyticsService) private var analytics
-    
-    init(
-        router: OnboardingRouter,
-        @ViewBuilder content: () -> Content,
-        @ViewBuilder destinationBuilder: @escaping (OnboardingRoute) -> some View
-    ) {
-        self._router = Bindable(router)
-        self.content = content()
-        self.destinationBuilder = { AnyView(destinationBuilder($0)) }
-    }
-    
-    var body: some View {
-        NavigationStack(path: $router.navigationPath) {
-            content
-                .navigationDestination(for: OnboardingRoute.self) { route in
-                    destinationBuilder(route)
-                        .onAppear {
-                            Task {
-                                await analytics.track(.screenView("Onboarding - \(route.id)"))
-                            }
-                        }
-                }
-        }
-        .sheet(item: $router.sheetItem) { sheet in
-            destinationBuilder(sheet.route)
-                .onAppear {
-                    Task {
-                        await analytics.track(.screenView("Onboarding Sheet - \(sheet.route.id)"))
-                    }
-                }
-        }
-        .alert(item: $router.alertItem) { alert in
-            alert.alert
-        }
-    }
-}
+
