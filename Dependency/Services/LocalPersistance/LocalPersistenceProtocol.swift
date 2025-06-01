@@ -11,14 +11,12 @@ import Foundation
 enum PersistenceStorageType: Sendable {
     case userDefaults
     case keychain
+    case swiftData
 }
 
 // MARK: - Persistence Protocol
 protocol LocalPersistenceProtocol: Sendable {
-    func save<T: Codable>(_ value: T, forKey key: String) async throws
-    func load<T: Codable>(_ type: T.Type, forKey key: String) async throws -> T?
-    func remove(forKey key: String) async throws
-    func exists(forKey key: String) async -> Bool
+
 }
 
 // MARK: - Persistence Errors

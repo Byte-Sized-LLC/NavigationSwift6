@@ -139,6 +139,7 @@
 				Services/LocalPersistance/KeychainPersistence.swift,
 				Services/LocalPersistance/LocalPersistanceService.swift,
 				Services/LocalPersistance/LocalPersistenceProtocol.swift,
+				Services/LocalPersistance/SwiftDataPersistance.swift,
 				Services/LocalPersistance/UserDefaultsPersistance.swift,
 				Services/UserServiceProtocol.swift,
 			);
