@@ -11,8 +11,7 @@ import SwiftUI
 enum AuthenticationState {
     case notAuthenticated
     case authenticated
-    case needsOnboarding(nextStep: OnboardingStep?)
-    case needsFullOnboarding
+    case needsOnboarding
     case onboardingComplete
 }
 
@@ -139,7 +138,7 @@ final class OnboardingStateManager: @unchecked Sendable {
         
         // Authenticated but no profile
         if userProfile == nil {
-            return .needsFullOnboarding
+            return .needsOnboarding
         }
         
         // Check if onboarding is complete
@@ -148,8 +147,8 @@ final class OnboardingStateManager: @unchecked Sendable {
         }
         
         // Check if there are incomplete required steps
-        if let nextRequired = nextRequiredIncompleteStep {
-            return .needsOnboarding(nextStep: nextRequired)
+        if (nextRequiredIncompleteStep != nil) {
+            return .needsOnboarding
         }
         
         // All required steps complete but not marked as complete
@@ -159,7 +158,7 @@ final class OnboardingStateManager: @unchecked Sendable {
         }
         
         // Default to needing onboarding
-        return .needsOnboarding(nextStep: nextIncompleteStep)
+        return .needsOnboarding
     }
     
     func getNextStepRoute() -> OnboardingRoute? {

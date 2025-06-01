@@ -2,6 +2,10 @@
 //  SwiftDataPersistance.swift
 //  GenericNavigation
 //
+//
+//  SwiftDataPersistance.swift
+//  GenericNavigation
+//
 //  Created by Dylan Anderson on 6/1/25.
 //
 
@@ -23,6 +27,8 @@ actor SwiftDataPersistence {
         
         self.modelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
         self.modelContext = ModelContext(modelContainer)
+        // Enable autosave to ensure changes persist
+        self.modelContext.autosaveEnabled = true
     }
     
     func save<T: PersistentModel>(_ objects: [T]) async throws {
@@ -50,20 +56,29 @@ actor SwiftDataPersistence {
     }
     
     func delete<T: PersistentModel>(_ object: T) async throws {
-        modelContext.delete(object)
+        // First fetch the object from context to ensure we have the right instance
+        if let existingObject = modelContext.model(for: object.persistentModelID) as? T {
+            modelContext.delete(existingObject)
+        } else {
+            // If not found by ID, try to delete the object directly
+            modelContext.delete(object)
+        }
         try modelContext.save()
     }
     
     func deleteAll<T: PersistentModel>(_ type: T.Type) async throws {
-        let objects = try await load(type)
-        for object in objects {
-            modelContext.delete(object)
-        }
+        try modelContext.delete(model: type)
         try modelContext.save()
     }
     
     func count<T: PersistentModel>(_ type: T.Type) async throws -> Int {
         let descriptor = FetchDescriptor<T>()
         return try modelContext.fetchCount(descriptor)
+    }
+    
+    func update<T: PersistentModel>(_ object: T) async throws {
+        // SwiftData automatically tracks changes to fetched objects
+        // Just ensure we save the context
+        try modelContext.save()
     }
 }

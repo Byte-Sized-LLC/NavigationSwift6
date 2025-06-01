@@ -28,7 +28,7 @@ struct OnboardingFlow: View {
                         destinationView(for: route)
                     } else {
                         // Default to authentication if no route determined
-                        OnboardingAuthenticationView()
+                        OnboardingAuthenticationView(onboardingRouter: router, dependencies: dependencies)
                     }
                 } destinationBuilder: { route in
                     destinationView(for: route)
@@ -46,9 +46,7 @@ struct OnboardingFlow: View {
         case .authenticated, .onboardingComplete:
             // Should not be in onboarding flow
             initialRoute = nil
-        case .needsOnboarding(let nextStep):
-            initialRoute = .checklist
-        case .needsFullOnboarding:
+        case .needsOnboarding:
             initialRoute = .checklist
         }
         
@@ -59,13 +57,13 @@ struct OnboardingFlow: View {
     private func destinationView(for route: OnboardingRoute) -> some View {
         switch route {
         case .authentication:
-            OnboardingAuthenticationView()
+            OnboardingAuthenticationView(onboardingRouter: router, dependencies: dependencies)
         case .checklist:
             OnboardingChecklistView()
         case .step(let step):
             switch step {
             case .signIn:
-                OnboardingAuthenticationView()
+                OnboardingAuthenticationView(onboardingRouter: router, dependencies: dependencies)
             case .welcome:
                 OnboardingWelcomeView(
                     onboardingRouter: router,
